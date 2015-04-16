@@ -1,11 +1,8 @@
-package session;
+package session.models;
 
 import java.util.ArrayList;
 
-import javax.ejb.Stateful;
-
-@Stateful(name="SessionBean")
-public class SessionBean implements SessionBeanRemote{
+public class Session{
 	private User user;
 	private Role userRole;
 	private ArrayList<Function> userFunctions;

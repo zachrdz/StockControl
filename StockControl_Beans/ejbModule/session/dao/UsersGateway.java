@@ -1,24 +1,18 @@
 /**
  * 
  */
-package core.settings.dao;
+package session.dao;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
-import core.settings.interfaces.UsersDao;
-import core.settings.models.AppPreferences;
-import core.settings.models.Function;
-import core.settings.models.Role;
-import core.settings.models.User;
+import session.models.Function;
+import session.models.Role;
+import session.models.User;
 
 /**
  * @author zachary.rodriguez
@@ -27,9 +21,6 @@ import core.settings.models.User;
 public class UsersGateway implements UsersDao {
 	
 	private Connection connection;
-	private Date lastReadTS;
-	private int logRecordCount = 0;
-	private AppPreferences AP = new AppPreferences();
 	
 	public UsersGateway(){
 		//set up the driver
@@ -43,7 +34,7 @@ public class UsersGateway implements UsersDao {
 		//System.out.println("MySQL JDBC driver registered.");
 		
 		try {
-			this.connection = DriverManager.getConnection(AP.getUrl(),AP.getUsername(), AP.getPassword());
+			this.connection = DriverManager.getConnection("jdbc:mysql://coderoot.co:3306/CS4743","zjrodr0709", "2487Zach");
 			System.out.println("DB connection for UsersGateway successful.");
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
@@ -60,7 +51,6 @@ public class UsersGateway implements UsersDao {
 			CallableStatement callstate = this.connection.prepareCall(callString);
 			rs = callstate.executeQuery();
 			
-			setLastUpdateTS();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -85,7 +75,7 @@ public class UsersGateway implements UsersDao {
 	}
 
 	@Override
-	public void doAdd(User user) {
+	public void doAdd(User user, char[] pwd) {
 		if(!doCheckDuplicateByEmail(user)){
 			String callString = "{call add_User(?,?,?)}";
 
@@ -93,7 +83,7 @@ public class UsersGateway implements UsersDao {
 				CallableStatement callstate = this.connection.prepareCall(callString);
 				callstate.setString(1, user.getFullName());
 				callstate.setString(2, user.getEmail());
-				callstate.setString(3, user.getPassword());
+				callstate.setString(3, String.valueOf(pwd));
 				
 				callstate.executeUpdate();
 			} catch (SQLException e) {
@@ -104,15 +94,16 @@ public class UsersGateway implements UsersDao {
 	}
 
 	@Override
-	public void doUpdate(User user) {
-		String callString = "{call update_UserByID(?,?,?)}";
+	public void doUpdate(User user, char[] pwd) {
+		String callString = "{call update_UserByID(?,?,?,?)}";
+		String pass = (pwd != null) ? String.valueOf(pwd) : doGetUserLogonByID(user);
 		
 		try {
 			CallableStatement callstate = this.connection.prepareCall(callString);
 			callstate.setInt(1, user.getUserID());
 			callstate.setString(2, user.getFullName());
 			callstate.setString(3, user.getEmail());
-			callstate.setString(4, user.getPassword());
+			callstate.setString(4, pass);
 			
 			callstate.executeUpdate();
 		} catch (SQLException e) {
@@ -179,7 +170,6 @@ public class UsersGateway implements UsersDao {
 				user.setUserID(rs.getInt("userID"));
 				user.setFullName(rs.getString("userFullName"));
 				user.setEmail(rs.getString("userEmail"));
-				user.setPassword(rs.getString("userPassword"));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -264,72 +254,25 @@ public class UsersGateway implements UsersDao {
 	}
 	
 	@Override
-	public void setLastUpdateTS() {
-		String callString = "{call get_CSTServerTime()}";
-		ResultSet timeresult = null;
+	public String doGetUserLogonByID(User user) {
+		String callString = "{call get_UserLogonByID(?)}";
+		String pwd = null;
 		
 		try {
 			CallableStatement callstate = this.connection.prepareCall(callString);
-			timeresult = callstate.executeQuery();
-			
-			String currentTime = null;
-			
-			while (timeresult.next())
-            {
-				currentTime = timeresult.getString("ts");
-				break;
-            }
-
-			lastReadTS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(currentTime);
-			System.out.println("Users Table synced: " + lastReadTS);
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-
-	@Override
-	public boolean doPollChanges() {
-		String query = "SELECT log_createTimeStamp,log_updateTimeStamp FROM UsersLog";
-		ResultSet rs = null;
-		int tmpLogRecCount = 0;
-		
-		try {
-			PreparedStatement ps = this.connection.prepareStatement(query);
-			rs = ps.executeQuery();
+			callstate.setInt(1, user.getUserID());
+			ResultSet rs = callstate.executeQuery();
 			
 			while(rs.next()){
-				String createTS = rs.getString("log_createTimeStamp");
-				String updateTS = rs.getString("log_updateTimeStamp");
-
-				Date cTS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createTS);
-				Date uTS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(updateTS);
-				
-				if(cTS.after(lastReadTS) || uTS.after(lastReadTS)){
-					System.out.println("Changes to table found! Last Update: " + lastReadTS + " createTS: " + cTS + " updateTS: " + uTS);
-					return true; //changes found
-				}
-				tmpLogRecCount++;
+				pwd = rs.getString("userPassword");
 			}
-			if(logRecordCount == 0){ logRecordCount = tmpLogRecCount; }
-			if((logRecordCount != 0) && (logRecordCount != tmpLogRecCount)){
-				logRecordCount = tmpLogRecCount; return true; //ChangesFound
-			}
-		
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 		
-		return false; //no changes to users table found
+		//No duplicates found
+		return pwd;
 	}
 
 	@Override

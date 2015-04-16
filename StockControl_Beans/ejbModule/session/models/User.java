@@ -1,7 +1,7 @@
 /**
  * 
  */
-package session;
+package session.models;
 
 /**
  * @author zachary.rodriguez

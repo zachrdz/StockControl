@@ -1,7 +1,7 @@
 /**
  * 
  */
-package core.partsModule.interfaces;
+package core.partsModule.dao;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;

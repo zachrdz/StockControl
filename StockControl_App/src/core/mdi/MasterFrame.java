@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
@@ -21,6 +23,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.*;
 
 import java.io.File;
+import java.util.Properties;
 
 import javax.imageio.ImageIO;
 
@@ -35,7 +38,7 @@ import core.productTemplatesModule.models.ProductsTableModel;
 import core.productTemplatesModule.views.ProductsTableView;
 import core.settings.controllers.AuthenticatorController;
 import core.settings.models.AppPreferences;
-import core.settings.models.AuthenticatorModel;
+import core.settings.models.AuthenticationBeanRemote;
 import core.settings.models.Function;
 import core.settings.models.Session;
 import core.settings.views.AuthenticatorView;
@@ -46,10 +49,11 @@ public class MasterFrame extends JFrame {
 	private PartsTableModel partsTableModel;
 	private InvTableModel invTableModel;
 	private ProductsTableModel productsTableModel;
-	private AuthenticatorModel authenticatorModel;
-	private Session session;
 	private AppPreferences AP;
 	private BufferedImage backgroundImage;
+	
+	private AuthenticationBeanRemote authenticator = null;
+	private Session session = null;
 	
 	@SuppressWarnings("serial")
 	public MasterFrame(String title) {
@@ -57,8 +61,8 @@ public class MasterFrame extends JFrame {
 		setAP(new AppPreferences());
 		setPartsTableModel(new PartsTableModel(AP));
 		setInvTableModel(new InvTableModel(AP));
-		setAuthenticatorModel(new AuthenticatorModel());
 		setProductsTableModel(new ProductsTableModel(AP));
+		initAuth();
 		
 		try {
 			backgroundImage = ImageIO.read(new File("img/cabinetron_logo_transparent.png"));
@@ -287,6 +291,19 @@ public class MasterFrame extends JFrame {
 		
 		return customMenuBar;
 	}
+	
+	public void initAuth(){
+		try{
+			Properties props = new Properties();
+			props.put("org.omg.CORBA.ORBInitialHost", "localhost");
+			props.put("org.omg.CORBA.ORBInitialPort", "3700");
+			
+			InitialContext itx = new InitialContext(props);
+			authenticator = (AuthenticationBeanRemote) itx.lookup("java:global/StockControl_Beans/AuthenticationBean!session.remote.AuthenticationBeanRemote");
+		} catch(NamingException e1){
+			e1.printStackTrace();
+		}
+	}
 
 	public PartsTableModel getPartsTableModel() {
 		return partsTableModel;
@@ -336,11 +353,8 @@ public class MasterFrame extends JFrame {
 		this.session = session;
 	}
 
-	public AuthenticatorModel getAuthenticatorModel() {
-		return authenticatorModel;
+	public AuthenticationBeanRemote getAuthenticator() {
+		return authenticator;
 	}
 
-	public void setAuthenticatorModel(AuthenticatorModel authenticatorModel) {
-		this.authenticatorModel = authenticatorModel;
-	}
 }

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package core.productTemplatesModule.interfaces;
+package core.productTemplatesModule.dao;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;

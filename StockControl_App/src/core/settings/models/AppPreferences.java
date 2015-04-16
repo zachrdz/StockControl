@@ -19,15 +19,13 @@ import org.w3c.dom.Document;
 import java.io.File;
 
 /**
- * This class is to store user preferences and read credentials off of UserPreferences.xml
+ * This class is to store user preferences and read credentials off of AppPreferences.xml
  * 
  */
 
 @SuppressWarnings("unused")
 public class AppPreferences{
 	 
-	ArrayList<String> preferences = new ArrayList<String>();
-  
 	public AppPreferences(){
 		try {
 			  
@@ -35,9 +33,7 @@ public class AppPreferences{
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(fXmlFile);
-		 
-			//optional, but recommended
-			//read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
+
 			doc.getDocumentElement().normalize();
 		 
 			String url = doc.getElementsByTagName("url").item(0).getTextContent();
@@ -51,6 +47,8 @@ public class AppPreferences{
 	    	e.printStackTrace();
 	    }
 	}
+	
+	ArrayList<String> preferences = new ArrayList<String>();
 	
 	public void setCredentials(String url, String db, String user, String pass) {
 		preferences.add(url);
@@ -74,6 +72,8 @@ public class AppPreferences{
 	public String getPassword() {
 		return preferences.get(3);
 	}
+	
+	// Use code below to store and pull from registry (Due to Java Bug, only works w/manual intervention)
 	
 	/*
 	Preferences preferences = Preferences.userNodeForPackage(AppPreferences.class);
@@ -100,5 +100,5 @@ public class AppPreferences{
   	public String getPassword() {
     	return preferences.get("db_pass", null);
   	}
-*/
+  */
 }

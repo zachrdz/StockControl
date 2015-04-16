@@ -1,19 +1,24 @@
 /**
  * 
  */
-package core.settings.models;
+package session.models;
 
 import java.util.ArrayList;
-import core.settings.dao.UsersGateway;
+
+import session.dao.UsersGateway;
+
+import javax.ejb.Stateless;
 
 /**
  * @author Zach
  *
  */
-public class AuthenticatorModel {
+
+@Stateless(name="AuthenticationBean")
+public class AuthenticationBean {
 	private UsersGateway gateway;
 	
-	public AuthenticatorModel(){
+	public AuthenticationBean(){
 		gateway = new UsersGateway();
 	}
 	
@@ -22,16 +27,14 @@ public class AuthenticatorModel {
 		
 		try {
 	    	User user = gateway.doGetUserByEmail(email);
-
-	        if (user.getPassword() != null && user.getPassword().equals(password)) {
+	    	
+	        if (null != user && password == gateway.doGetUserLogonByID(user)) {
         		Role role = gateway.doGetUserRole(user);
 	        	ArrayList<Function> userFunctions = gateway.doGetRoleFunctionList(role);
-	        	ArrayList<Function> allFunctions = gateway.doGetFunctionList();
 	        	
 	        	session.setUser(user);
 	        	session.setUserRole(role);
 	        	session.setUserFunctions(userFunctions);
-	        	session.setAllFunctions(allFunctions);
 
 	    		return session;
 	        }

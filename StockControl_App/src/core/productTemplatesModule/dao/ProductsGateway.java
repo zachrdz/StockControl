@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import core.productTemplatesModule.models.ProductItem;
-import core.productTemplatesModule.interfaces.ProductsDao;
 import core.settings.models.AppPreferences;
 
 public class ProductsGateway implements ProductsDao{

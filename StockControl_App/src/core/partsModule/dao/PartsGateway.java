@@ -15,7 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import core.partsModule.interfaces.PartsDao;
 import core.partsModule.models.PartItem;
 import core.settings.models.AppPreferences;
 

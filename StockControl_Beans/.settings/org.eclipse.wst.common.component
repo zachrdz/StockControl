@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="cs4743_session_bean">
+    <wb-module deploy-name="StockControl_Beans">
         <wb-resource deploy-path="/" source-path="/ejbModule" tag="defaultRootSource"/>
-        <property name="java-output-path" value="/cs4743_session_bean/build/classes"/>
+        <property name="java-output-path" value="/StockControl_Beans/build/classes"/>
     </wb-module>
 </project-modules>

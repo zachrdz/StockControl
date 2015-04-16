@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import core.inventoryModule.interfaces.InvDao;
 import core.inventoryModule.models.InvItem;
 import core.inventoryModule.models.InvItemExt;
 import core.settings.models.AppPreferences;

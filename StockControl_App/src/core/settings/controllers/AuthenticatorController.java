@@ -8,20 +8,17 @@ import java.awt.event.ActionListener;
 import core.mdi.MasterFrame;
 import core.settings.models.Session;
 import core.settings.models.User;
-import core.settings.models.AuthenticatorModel;
 import core.settings.views.AuthenticatorView;
 
 public class AuthenticatorController implements ActionListener{
 	public static final String LOGIN_COMMAND = "LOGIN_COMMAND";
 	
 	private AuthenticatorView view;
-	private AuthenticatorModel model;
 	private MasterFrame m;
     
     public AuthenticatorController(AuthenticatorView view, MasterFrame m){
     	this.m = m;
     	this.view = view;
-		this.model = m.getAuthenticatorModel();
 		initView();
     }
     
@@ -35,7 +32,7 @@ public class AuthenticatorController implements ActionListener{
 		switch (e.getActionCommand()) {
 		case LOGIN_COMMAND:
 			User credentials = getTextInput();
-			Session session = model.authenticateUser(credentials.getEmail(), credentials.getPassword());
+			Session session = m.getAuthenticator().authenticateUser(credentials.getEmail(), credentials.getPassword());
 			
 			if(null != session){
 				m.setSession(session);

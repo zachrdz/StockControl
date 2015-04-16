@@ -1,7 +1,7 @@
 /**
  * 
  */
-package core.inventoryModule.interfaces;
+package core.inventoryModule.dao;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;

@@ -13,7 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import core.productTemplatesModule.interfaces.ProductPartsDao;
 import core.productTemplatesModule.models.ProductPartItem;
 import core.productTemplatesModule.models.ProductPartItemExt;
 import core.settings.models.AppPreferences;
