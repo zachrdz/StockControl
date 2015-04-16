@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<userPreferences>
+	<DBcredentials>
+		<url>jdbc:mysql://coderoot.co:3306/</url>
+		<db>CS4743</db>
+		<user>zjrodr0709</user>
+		<pass>2487Zach</pass>
+	</DBcredentials>
+</userPreferences>
