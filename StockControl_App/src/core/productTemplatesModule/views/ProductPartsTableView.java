@@ -21,12 +21,12 @@ import core.productTemplatesModule.models.ProductPartsTableModel;
  * @author Zach
  *
  */
-@SuppressWarnings("serial")
 public class ProductPartsTableView extends JPanel{
 	private ProductPartsTableModel tableModel;
 	private JTable table;
 	private JPanel panel;
 	private JButton addBtn, deleteBtn;
+	private static final long serialVersionUID = 1L;
 	
 	public ProductPartsTableView(ProductPartsTableModel tableModel){
 		this.tableModel = tableModel;

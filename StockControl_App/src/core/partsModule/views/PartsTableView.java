@@ -17,13 +17,13 @@ import core.partsModule.controllers.PartsTableController;
 import core.partsModule.models.PartsTableModel;
 
 
-@SuppressWarnings("serial")
 public class PartsTableView extends JInternalFrame {
 	private PartsTableModel tableModel;
 	@SuppressWarnings("unused")
 	private MasterFrame m;
 	private JTable table;
 	private JButton addPartBtn,deletePartBtn,closeBtn;
+	private static final long serialVersionUID = 1L;
 	
 	public PartsTableView(MasterFrame m) {
 		setLayout(new FlowLayout());

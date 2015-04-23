@@ -21,7 +21,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-@SuppressWarnings("serial")
 public class ProductPartsDetailView extends JInternalFrame{
 
 	private ProductPartItem detailProductPart;
@@ -35,6 +34,7 @@ public class ProductPartsDetailView extends JInternalFrame{
 	private int selectedPartID = 0;
 	private int tmpIndex = 0;
 	private MasterFrame m;
+	private static final long serialVersionUID = 1L;
 
 	public ProductPartsDetailView(ProductPartItem detailProductPart, MasterFrame m){
 		this.m = m;

@@ -18,7 +18,6 @@ import core.inventoryModule.models.InvTableModel;
 import core.mdi.MasterFrame;
 
 
-@SuppressWarnings("serial")
 public class InvTableView extends JInternalFrame {
 	private InvTableModel tableModel;
 	private JTable table;
@@ -27,6 +26,7 @@ public class InvTableView extends JInternalFrame {
 	private JButton addInvBtn,deleteInvBtn;
 	@SuppressWarnings("unused")
 	private MasterFrame m;
+	private static final long serialVersionUID = 1L;
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public InvTableView(MasterFrame m) {

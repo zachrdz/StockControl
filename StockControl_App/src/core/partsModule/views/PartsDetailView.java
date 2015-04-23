@@ -13,7 +13,6 @@ import core.partsModule.models.PartItem;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-@SuppressWarnings("serial")
 public class PartsDetailView extends JInternalFrame{
 
 	private PartItem detailPart;
@@ -26,6 +25,7 @@ public class PartsDetailView extends JInternalFrame{
 	@SuppressWarnings("rawtypes")
 	private JComboBox pQuantityUnit;
 	private MasterFrame m;
+	private static final long serialVersionUID = 1L;
 
 	public PartsDetailView(PartItem detailPart, MasterFrame m){
 		this.detailPart = detailPart;

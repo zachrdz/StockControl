@@ -11,7 +11,6 @@ import core.partsModule.controllers.PartsAddController;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-@SuppressWarnings("serial")
 public class PartsAddView extends JInternalFrame{
 
 	private JButton addBtn, cancelBtn;
@@ -24,6 +23,7 @@ public class PartsAddView extends JInternalFrame{
 	private JComboBox pQuantityUnit;
 	@SuppressWarnings("unused")
 	private MasterFrame m;
+	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public PartsAddView(MasterFrame m){

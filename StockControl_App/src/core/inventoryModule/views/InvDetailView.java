@@ -15,7 +15,7 @@ import core.productTemplatesModule.models.ProductItem;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-@SuppressWarnings("serial")
+
 public class InvDetailView extends JInternalFrame{
 
 	private InvItem detailInv;
@@ -27,6 +27,7 @@ public class InvDetailView extends JInternalFrame{
 	private JComboBox iLocation;
 	private JTextField iQuantity;
 	private MasterFrame m;
+	private static final long serialVersionUID = 1L;
 
 	public InvDetailView(InvItem detailInv, MasterFrame m){
 		this.detailInv = detailInv;

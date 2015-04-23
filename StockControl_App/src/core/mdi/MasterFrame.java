@@ -55,7 +55,6 @@ public class MasterFrame extends JFrame {
 	private AuthenticationBeanRemote authenticator = null;
 	private Session session = null;
 	
-	@SuppressWarnings("serial")
 	public MasterFrame(String title) {
 		super(title);
 		setAP(new AppPreferences());
@@ -86,7 +85,9 @@ public class MasterFrame extends JFrame {
 		//create the MDI desktop
 		// A specialized layered pane to be used with JInternalFrames
         desktop = new JDesktopPane() {
-            @Override
+			private static final long serialVersionUID = 1L;
+
+			@Override
             protected void paintComponent(Graphics grphcs) {
             	Dimension frameSize = getContentPane().getSize();
             	

@@ -17,13 +17,13 @@ import core.productTemplatesModule.controllers.ProductsTableController;
 import core.productTemplatesModule.models.ProductsTableModel;
 
 
-@SuppressWarnings("serial")
 public class ProductsTableView extends JInternalFrame {
 	private ProductsTableModel tableModel;
 	private JTable table;
 	private JButton addProductBtn,deleteProductBtn,closeBtn;
 	@SuppressWarnings("unused")
 	private MasterFrame m;
+	private static final long serialVersionUID = 1L;
 	
 	public ProductsTableView(MasterFrame m) {
 		setLayout(new FlowLayout());

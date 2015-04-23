@@ -3,9 +3,11 @@
  */
 package session.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import session.dao.UsersGateway;
+import session.remote.AuthenticationBeanRemote;
 
 import javax.ejb.Stateless;
 
@@ -15,7 +17,7 @@ import javax.ejb.Stateless;
  */
 
 @Stateless(name="AuthenticationBean")
-public class AuthenticationBean {
+public class AuthenticationBean implements AuthenticationBeanRemote{
 	private UsersGateway gateway;
 	
 	public AuthenticationBean(){

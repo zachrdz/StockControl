@@ -19,7 +19,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-@SuppressWarnings("serial")
 public class ProductPartsAddView extends JInternalFrame{
 
 	private JButton addBtn, cancelBtn;
@@ -32,6 +31,7 @@ public class ProductPartsAddView extends JInternalFrame{
 	private int selectedPartID = 0;
 	@SuppressWarnings("unused")
 	private MasterFrame m;
+	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ProductPartsAddView(MasterFrame m){

@@ -24,7 +24,6 @@ import core.productTemplatesModule.models.ProductItem;
  * @author Zach
  *
  */
-@SuppressWarnings("serial")
 public class ProductsDetailView extends JInternalFrame{
 	private ProductItem detailProduct;
 	private JButton updateBtn, deleteBtn;
@@ -33,6 +32,7 @@ public class ProductsDetailView extends JInternalFrame{
 	
 	private JTextField pNo;
 	private JTextField pDesc;
+	private static final long serialVersionUID = 1L;
 	
 	public ProductsDetailView(ProductItem detailProduct, ProductPartsTableView productPartsTableView, MasterFrame m){
 		this.detailProduct = detailProduct;

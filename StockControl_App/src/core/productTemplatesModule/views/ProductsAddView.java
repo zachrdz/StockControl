@@ -23,7 +23,6 @@ import core.productTemplatesModule.controllers.ProductsAddController;
  * @author Zach
  *
  */
-@SuppressWarnings("serial")
 public class ProductsAddView extends JInternalFrame{
 	private JButton addBtn, cancelBtn;
 
@@ -31,6 +30,7 @@ public class ProductsAddView extends JInternalFrame{
 	private JTextField pDesc;
 	@SuppressWarnings("unused")
 	private MasterFrame m;
+	private static final long serialVersionUID = 1L;
 
 	public ProductsAddView(MasterFrame m){
 		this.m = m;
