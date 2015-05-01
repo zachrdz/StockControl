@@ -1,13 +1,16 @@
 /**
  * 
  */
-package session.models;
+package core.settings.models;
+
+import java.io.Serializable;
 
 /**
  * @author zachary.rodriguez
  *
  */
-public class User {
+public class User implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private int userID;
 	private String fullName;
 	private String email;

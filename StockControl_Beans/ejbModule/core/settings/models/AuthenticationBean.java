@@ -1,15 +1,15 @@
 /**
  * 
  */
-package session.models;
+package core.settings.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import session.dao.UsersGateway;
-import session.remote.AuthenticationBeanRemote;
-
 import javax.ejb.Stateless;
+
+import core.settings.dao.UsersGateway;
+import core.settings.remote.AuthenticationBeanRemote;
 
 /**
  * @author Zach
@@ -17,7 +17,8 @@ import javax.ejb.Stateless;
  */
 
 @Stateless(name="AuthenticationBean")
-public class AuthenticationBean implements AuthenticationBeanRemote{
+public class AuthenticationBean implements AuthenticationBeanRemote, Serializable{
+	private static final long serialVersionUID = 1L;
 	private UsersGateway gateway;
 	
 	public AuthenticationBean(){
@@ -29,8 +30,8 @@ public class AuthenticationBean implements AuthenticationBeanRemote{
 		
 		try {
 	    	User user = gateway.doGetUserByEmail(email);
-	    	
-	        if (null != user && password == gateway.doGetUserLogonByID(user)) {
+
+	        if (null != user && password.equals(gateway.doGetUserLogonByID(user))) {
         		Role role = gateway.doGetUserRole(user);
 	        	ArrayList<Function> userFunctions = gateway.doGetRoleFunctionList(role);
 	        	

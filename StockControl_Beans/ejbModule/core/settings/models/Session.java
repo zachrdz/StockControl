@@ -1,4 +1,4 @@
-package session.models;
+package core.settings.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;

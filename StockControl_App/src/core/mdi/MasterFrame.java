@@ -1,4 +1,5 @@
 package core.mdi;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -38,9 +39,9 @@ import core.productTemplatesModule.models.ProductsTableModel;
 import core.productTemplatesModule.views.ProductsTableView;
 import core.settings.controllers.AuthenticatorController;
 import core.settings.models.AppPreferences;
-import core.settings.models.AuthenticationBeanRemote;
 import core.settings.models.Function;
 import core.settings.models.Session;
+import core.settings.remote.AuthenticationBeanRemote;
 import core.settings.views.AuthenticatorView;
 
 public class MasterFrame extends JFrame {
@@ -51,10 +52,10 @@ public class MasterFrame extends JFrame {
 	private ProductsTableModel productsTableModel;
 	private AppPreferences AP;
 	private BufferedImage backgroundImage;
-	
+
 	private AuthenticationBeanRemote authenticator = null;
 	private Session session = null;
-	
+
 	public MasterFrame(String title) {
 		super(title);
 		setAP(new AppPreferences());
@@ -62,157 +63,167 @@ public class MasterFrame extends JFrame {
 		setInvTableModel(new InvTableModel(AP));
 		setProductsTableModel(new ProductsTableModel(AP));
 		initAuth();
-		
+
 		try {
-			backgroundImage = ImageIO.read(new File("img/cabinetron_logo_transparent.png"));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-		
-		try {
-		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-		        if ("Nimbus".equals(info.getName())) {
-		            UIManager.setLookAndFeel(info.getClassName());
-		            break;
-		        }
-		    }
-		} catch (Exception e) {
-		    // If Nimbus is not available, you can set the GUI to another look and feel.
+			backgroundImage = ImageIO.read(new File(
+					"img/cabinetron_logo_transparent.png"));
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		
+
+		try {
+			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+				if ("Nimbus".equals(info.getName())) {
+					UIManager.setLookAndFeel(info.getClassName());
+					break;
+				}
+			}
+		} catch (Exception e) {
+			// If Nimbus is not available, you can set the GUI to another look
+			// and feel.
+		}
+
 		updateJMenuBar();
-		   
-		//create the MDI desktop
+
+		// create the MDI desktop
 		// A specialized layered pane to be used with JInternalFrames
-        desktop = new JDesktopPane() {
+		desktop = new JDesktopPane() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-            protected void paintComponent(Graphics grphcs) {
-            	Dimension frameSize = getContentPane().getSize();
-            	
-                int dx = ((frameSize.width/2)) - 400;
-                int dy = ((frameSize.height/2)) - 225;  
-            	
-            	super.paintComponent(grphcs);
-                grphcs.setColor(new Color(197,239,247));
-                grphcs.fillRect(0, 0, getWidth(), getHeight());
-                grphcs.drawImage(backgroundImage, dx, dy, null);
-            }
+			protected void paintComponent(Graphics grphcs) {
+				Dimension frameSize = getContentPane().getSize();
 
-            @Override
-            public Dimension getPreferredSize() {
-                return new Dimension(backgroundImage.getWidth(), backgroundImage.getHeight());
-            }
-        };
+				int dx = ((frameSize.width / 2)) - 400;
+				int dy = ((frameSize.height / 2)) - 225;
+
+				super.paintComponent(grphcs);
+				grphcs.setColor(new Color(197, 239, 247));
+				grphcs.fillRect(0, 0, getWidth(), getHeight());
+				grphcs.drawImage(backgroundImage, dx, dy, null);
+			}
+
+			@Override
+			public Dimension getPreferredSize() {
+				return new Dimension(backgroundImage.getWidth(),
+						backgroundImage.getHeight());
+			}
+		};
 		add(desktop);
-		
-		Runtime.getRuntime().addShutdownHook(new Thread(){
-			public void run(){
-				if(MasterFrame.this.getInvTableModel() != null)
-					MasterFrame.this.getInvTableModel().exitModule();;
-				if(MasterFrame.this.getProductsTableModel() != null)
+
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				if (MasterFrame.this.getInvTableModel() != null)
+					MasterFrame.this.getInvTableModel().exitModule();
+				;
+				if (MasterFrame.this.getProductsTableModel() != null)
 					MasterFrame.this.getProductsTableModel().exitModule();
-				if(MasterFrame.this.getPartsTableModel() != null)
-					MasterFrame.this.getPartsTableModel().exitModule();;
+				if (MasterFrame.this.getPartsTableModel() != null)
+					MasterFrame.this.getPartsTableModel().exitModule();
+				;
 			}
 		});
-		
+
 		AuthenticatorView authView = new AuthenticatorView(this);
 		new AuthenticatorController(authView, MasterFrame.this);
 	}
 
-	//display a child's message in a dialog centered on MDI frame
+	// display a child's message in a dialog centered on MDI frame
 	public void displayChildMessage(String msg) {
 		JOptionPane.showInternalMessageDialog(this.getContentPane(), msg);
 	}
-	
-	//display a child's yes/no message in a dialog centered on MDI frame
+
+	// display a child's yes/no message in a dialog centered on MDI frame
 	public boolean displayChildMessageOption(String titleBar, String infoMsg) {
 		int dialogButton = JOptionPane.YES_NO_OPTION;
-		
-		int dialogResult = JOptionPane.showInternalConfirmDialog(this.getContentPane(), infoMsg ,titleBar,dialogButton);
-		if(dialogResult == JOptionPane.YES_OPTION){
+
+		int dialogResult = JOptionPane.showInternalConfirmDialog(
+				this.getContentPane(), infoMsg, titleBar, dialogButton);
+		if (dialogResult == JOptionPane.YES_OPTION) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
-	//display a child's yes/no message in a dialog centered on MDI frame
-	public int displayChildMessageOptionCustom(String titleBar, String infoMsg, Object[] options) {
-		int dialogResult = JOptionPane.showInternalOptionDialog(this.getContentPane(), infoMsg, titleBar,
-				JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
-				null, options, options[0]);
-		
+
+	// display a child's yes/no message in a dialog centered on MDI frame
+	public int displayChildMessageOptionCustom(String titleBar, String infoMsg,
+			Object[] options) {
+		int dialogResult = JOptionPane.showInternalOptionDialog(
+				this.getContentPane(), infoMsg, titleBar,
+				JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null,
+				options, options[0]);
+
 		return dialogResult;
 	}
-	
-	//creates and displays the JFrame
+
+	// creates and displays the JFrame
 	public static void createAndShowGUI() {
 		MasterFrame frame = new MasterFrame("Cabinetron Managment Tool");
 		frame.setSize(1024, 768);
 		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}
-	
-	public JMenuBar updateJMenuBar(){
-		Image resizedCheckImage = null,resizedXImage = null;
+
+	public JMenuBar updateJMenuBar() {
+		Image resizedCheckImage = null, resizedXImage = null;
 		ImageIcon checkIcon = null, xIcon = null;
-		
+
 		try {
-            Image checkImage = ImageIO.read(new File("img/checkIcon.png"));
-            Image xImage = ImageIO.read(new File("img/xIcon.png"));
-            
-            resizedCheckImage = checkImage.getScaledInstance(20, 20, 0);
-            resizedXImage = xImage.getScaledInstance(20, 20, 0);
-            
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-		
-        checkIcon = new ImageIcon(resizedCheckImage);
-        xIcon = new ImageIcon(resizedXImage);
-		
-		//create menu for adding inner frames
+			Image checkImage = ImageIO.read(new File("img/checkIcon.png"));
+			Image xImage = ImageIO.read(new File("img/xIcon.png"));
+
+			resizedCheckImage = checkImage.getScaledInstance(20, 20, 0);
+			resizedXImage = xImage.getScaledInstance(20, 20, 0);
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		checkIcon = new ImageIcon(resizedCheckImage);
+		xIcon = new ImageIcon(resizedXImage);
+
+		// create menu for adding inner frames
 		JMenuBar customMenuBar = new JMenuBar();
 		JMenu menu = new JMenu("File");
 		JMenuItem menuItem;
-		
-		if(null == session){
+
+		if (null == session) {
 			menuItem = new JMenuItem("Quit");
 			menuItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					MasterFrame.this.dispatchEvent(new WindowEvent(MasterFrame.this, WindowEvent.WINDOW_CLOSING));
+					MasterFrame.this.dispatchEvent(new WindowEvent(
+							MasterFrame.this, WindowEvent.WINDOW_CLOSING));
 				}
-			});	
+			});
 			menu.add(menuItem);
 		}
 		customMenuBar.add(menu);
-		
+
 		String UserNameInfoText = "Not Logged In";
 		String UserRoleInfoText = "";
-		
-		if(null != session){
+
+		if (null != session) {
 			menuItem = new JMenuItem("Logout");
 			menuItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					session = null;			
+					session = null;
 					invTableModel.refreshTableData("");
-				    for(JInternalFrame frame : getDesktop().getAllFrames()){
-				    	frame.dispose();
-				    }
-				    updateJMenuBar();
-				    
-				    AuthenticatorView authView = new AuthenticatorView(MasterFrame.this);
+					for (JInternalFrame frame : getDesktop().getAllFrames()) {
+						frame.dispose();
+					}
+					updateJMenuBar();
+
+					AuthenticatorView authView = new AuthenticatorView(
+							MasterFrame.this);
 					new AuthenticatorController(authView, MasterFrame.this);
 				}
 			});
 			menu.add(menuItem);
-				
+
 			menu = new JMenu("Modules");
 			menuItem = new JMenuItem("Parts");
 			menuItem.addActionListener(new ActionListener() {
@@ -222,9 +233,12 @@ public class MasterFrame extends JFrame {
 					new PartsTableController(ptView, MasterFrame.this);
 				}
 			});
-			if(!session.getUserFunctions().contains(new Function("canViewParts"))){ menuItem.setEnabled(false); }
+			if (!session.getUserFunctions().contains(
+					new Function("canViewParts"))) {
+				menuItem.setEnabled(false);
+			}
 			menu.add(menuItem);
-			
+
 			menuItem = new JMenuItem("Inventory");
 			menuItem.addActionListener(new ActionListener() {
 				@Override
@@ -232,76 +246,85 @@ public class MasterFrame extends JFrame {
 					InvTableView itView = new InvTableView(MasterFrame.this);
 					new InvTableController(itView, MasterFrame.this);
 				}
-			});		
-			if(!session.getUserFunctions().contains(new Function("canViewInventory"))){ menuItem.setEnabled(false); }
+			});
+			if (!session.getUserFunctions().contains(
+					new Function("canViewInventory"))) {
+				menuItem.setEnabled(false);
+			}
 			menu.add(menuItem);
-			
+
 			menuItem = new JMenuItem("Product Templates");
 			menuItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					ProductsTableView ptView = new ProductsTableView(MasterFrame.this);
+					ProductsTableView ptView = new ProductsTableView(
+							MasterFrame.this);
 					new ProductsTableController(ptView, MasterFrame.this);
 				}
 			});
-			if(!session.getUserFunctions().contains(new Function("canViewProductTemplates"))){ menuItem.setEnabled(false); }
+			if (!session.getUserFunctions().contains(
+					new Function("canViewProductTemplates"))) {
+				menuItem.setEnabled(false);
+			}
 			menu.add(menuItem);
 
-			UserNameInfoText = session.getUser().getFullName(); 
-			UserRoleInfoText = "("+session.getUserRole().getRoleName()+")"; 
+			UserNameInfoText = session.getUser().getFullName();
+			UserRoleInfoText = "(" + session.getUserRole().getRoleName() + ")";
 		}
-		
+
 		customMenuBar.add(menu);
-		
+
 		customMenuBar.add(Box.createHorizontalGlue());
 		JMenu UserNameInfo = new JMenu(UserNameInfoText);
 		JMenu UserRoleInfo = new JMenu(UserRoleInfoText);
 		customMenuBar.add(UserNameInfo);
 		customMenuBar.add(UserRoleInfo);
-		
-		if(null != session){
+        /*
+		if (null != session) {
 			menuItem = new JMenuItem("Email: " + session.getUser().getEmail());
 			menuItem.setEnabled(false);
 			UserNameInfo.add(menuItem);
 
-			for(Function function : session.getAllFunctions()){
+			for (Function function : session.getAllFunctions()) {
 				menuItem = new JMenuItem(function.getFunctionName());
 				boolean exists = false;
-				for(Function subFunction : session.getUserFunctions()){
-					if(subFunction.getFunctionID() == function.getFunctionID()){
+				for (Function subFunction : session.getUserFunctions()) {
+					if (subFunction.getFunctionID() == function.getFunctionID()) {
 						exists = true;
-					    break;
+						break;
 					}
 				}
-				
-				if(exists) {
+
+				if (exists) {
 					menuItem.setIcon(checkIcon);
-				} else{
+				} else {
 					menuItem.setIcon(xIcon);
 				}
-				
+
 				menuItem.setEnabled(false);
 				UserRoleInfo.add(menuItem);
-				
+
 			}
 		}
-		
+		*/
+
 		setJMenuBar(customMenuBar);
 		customMenuBar.validate();
 		customMenuBar.repaint();
-		
+
 		return customMenuBar;
 	}
-	
-	public void initAuth(){
-		try{
+
+	public void initAuth() {
+		try {
 			Properties props = new Properties();
 			props.put("org.omg.CORBA.ORBInitialHost", "localhost");
 			props.put("org.omg.CORBA.ORBInitialPort", "3700");
-			
+
 			InitialContext itx = new InitialContext(props);
-			authenticator = (AuthenticationBeanRemote) itx.lookup("java:global/StockControl_Beans/AuthenticationBean!session.remote.AuthenticationBeanRemote");
-		} catch(NamingException e1){
+			authenticator = (AuthenticationBeanRemote) itx
+					.lookup("java:global/StockControl_Beans/AuthenticationBean!core.settings.remote.AuthenticationBeanRemote");
+		} catch (NamingException e1) {
 			e1.printStackTrace();
 		}
 	}
@@ -321,7 +344,7 @@ public class MasterFrame extends JFrame {
 	public void setProductsTableModel(ProductsTableModel productsTableModel) {
 		this.productsTableModel = productsTableModel;
 	}
-	
+
 	public InvTableModel getInvTableModel() {
 		return invTableModel;
 	}
@@ -329,7 +352,7 @@ public class MasterFrame extends JFrame {
 	public void setInvTableModel(InvTableModel invTableModel) {
 		this.invTableModel = invTableModel;
 	}
-	
+
 	public AppPreferences getAP() {
 		return AP;
 	}
@@ -345,7 +368,7 @@ public class MasterFrame extends JFrame {
 	public void setDesktop(JDesktopPane desktop) {
 		this.desktop = desktop;
 	}
-	
+
 	public Session getSession() {
 		return session;
 	}

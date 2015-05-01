@@ -3,11 +3,14 @@
  */
 package core.settings.models;
 
+import java.io.Serializable;
+
 /**
  * @author zachary.rodriguez
  *
  */
-public class Function {
+public class Function implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private int functionID;
 	private String functionName;
 	private String functionDesc;

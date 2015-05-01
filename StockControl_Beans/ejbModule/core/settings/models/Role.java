@@ -1,13 +1,16 @@
 /**
  * 
  */
-package session.models;
+package core.settings.models;
+
+import java.io.Serializable;
 
 /**
  * @author zachary.rodriguez
  *
  */
-public class Role {
+public class Role implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private int roleID;
 	private String roleName;
 	private String roleDesc;

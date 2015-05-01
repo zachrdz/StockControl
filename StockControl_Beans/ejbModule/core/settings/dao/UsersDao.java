@@ -1,14 +1,14 @@
 /**
  * 
  */
-package session.dao;
+package core.settings.dao;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import session.models.Function;
-import session.models.Role;
-import session.models.User;
+import core.settings.models.Function;
+import core.settings.models.Role;
+import core.settings.models.User;
 
 /**
  * @author Zach

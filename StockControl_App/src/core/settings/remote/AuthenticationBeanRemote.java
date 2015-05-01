@@ -1,9 +1,9 @@
-package session.remote;
+package core.settings.remote;
 
 
 import javax.ejb.Remote;
 
-import session.models.Session;
+import core.settings.models.Session;
 
 @Remote
 public interface AuthenticationBeanRemote {

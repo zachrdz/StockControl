@@ -3,13 +3,15 @@
  */
 package core.settings.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * @author zachary.rodriguez
  *
  */
-public class Session {
+public class Session implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private User user;
 	private Role userRole;
 	private ArrayList<Function> userFunctions;

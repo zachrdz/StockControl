@@ -1,8 +1,9 @@
 /**
  * 
  */
-package session.dao;
+package core.settings.dao;
 
+import java.io.Serializable;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,16 +11,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import session.models.Function;
-import session.models.Role;
-import session.models.User;
+import core.settings.models.Function;
+import core.settings.models.Role;
+import core.settings.models.User;
 
 /**
  * @author zachary.rodriguez
  *
  */
-public class UsersGateway implements UsersDao {
-	
+public class UsersGateway implements UsersDao, Serializable {
+
+	private static final long serialVersionUID = 1L;
 	private Connection connection;
 	
 	public UsersGateway(){
