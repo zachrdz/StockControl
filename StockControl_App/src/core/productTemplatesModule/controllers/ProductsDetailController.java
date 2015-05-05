@@ -6,10 +6,10 @@ package core.productTemplatesModule.controllers;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import core.inventoryModule.models.InvItem;
-import core.mdi.MasterFrame;
-import core.productTemplatesModule.models.ProductItem;
+import core.inventoryModule.models.obj.InvItem;
+import core.mdi.models.MasterFrame;
 import core.productTemplatesModule.models.ProductsTableModel;
+import core.productTemplatesModule.models.obj.ProductItem;
 import core.productTemplatesModule.views.ProductsDetailView;
 
 /**

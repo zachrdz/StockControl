@@ -15,7 +15,7 @@ import javax.swing.JTable;
 
 import core.inventoryModule.controllers.InvTableController;
 import core.inventoryModule.models.InvTableModel;
-import core.mdi.MasterFrame;
+import core.mdi.models.MasterFrame;
 
 
 public class InvTableView extends JInternalFrame {

@@ -13,10 +13,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 
-import core.mdi.MasterFrame;
-import core.productTemplatesModule.models.ProductPartItem;
-import core.productTemplatesModule.models.ProductPartItemExt;
+import core.mdi.models.MasterFrame;
 import core.productTemplatesModule.models.ProductPartsTableModel;
+import core.productTemplatesModule.models.obj.ProductPartItem;
+import core.productTemplatesModule.models.obj.ProductPartItemExt;
 import core.productTemplatesModule.views.ProductPartsAddView;
 import core.productTemplatesModule.views.ProductPartsDetailView;
 import core.productTemplatesModule.views.ProductPartsTableView;

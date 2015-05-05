@@ -6,7 +6,7 @@ package core.partsModule.dao;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import core.partsModule.models.PartItem;
+import core.partsModule.models.obj.PartItem;
 
 /**
  * @author Zach

@@ -6,11 +6,11 @@ package core.partsModule.controllers;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import core.mdi.MasterFrame;
-import core.partsModule.models.PartItem;
+import core.mdi.models.MasterFrame;
 import core.partsModule.models.PartsTableModel;
+import core.partsModule.models.obj.PartItem;
 import core.partsModule.views.PartsDetailView;
-import core.settings.models.Function;
+import core.session.models.obj.Function;
 
 public class PartsDetailController implements ActionListener{
 	public static final String UPDATE_PART_COMMAND = "UPDATE_PART_COMMAND";

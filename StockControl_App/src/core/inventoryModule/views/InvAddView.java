@@ -8,9 +8,9 @@ import javax.swing.*;
 import org.jdesktop.swingx.autocomplete.*;
 
 import core.inventoryModule.controllers.InvAddController;
-import core.mdi.MasterFrame;
-import core.partsModule.models.PartItem;
-import core.productTemplatesModule.models.ProductItem;
+import core.mdi.models.MasterFrame;
+import core.partsModule.models.obj.PartItem;
+import core.productTemplatesModule.models.obj.ProductItem;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

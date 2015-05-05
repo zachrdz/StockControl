@@ -6,7 +6,7 @@ package core.productTemplatesModule.dao;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import core.productTemplatesModule.models.ProductItem;
+import core.productTemplatesModule.models.obj.ProductItem;
 
 /**
  * @author Zach

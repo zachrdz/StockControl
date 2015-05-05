@@ -5,7 +5,7 @@ package core.partsModule.views;
  */
 import javax.swing.*;
 
-import core.mdi.MasterFrame;
+import core.mdi.models.MasterFrame;
 import core.partsModule.controllers.PartsAddController;
 
 import java.awt.*;

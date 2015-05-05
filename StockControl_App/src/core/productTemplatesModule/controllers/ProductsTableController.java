@@ -12,11 +12,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 
-import core.inventoryModule.models.InvItem;
-import core.mdi.MasterFrame;
-import core.productTemplatesModule.models.ProductItem;
+import core.inventoryModule.models.obj.InvItem;
+import core.mdi.models.MasterFrame;
 import core.productTemplatesModule.models.ProductPartsTableModel;
 import core.productTemplatesModule.models.ProductsTableModel;
+import core.productTemplatesModule.models.obj.ProductItem;
 import core.productTemplatesModule.views.ProductPartsTableView;
 import core.productTemplatesModule.views.ProductsAddView;
 import core.productTemplatesModule.views.ProductsDetailView;

@@ -6,9 +6,9 @@ package core.partsModule.views;
  */
 import javax.swing.*;
 
-import core.mdi.MasterFrame;
+import core.mdi.models.MasterFrame;
 import core.partsModule.controllers.PartsDetailController;
-import core.partsModule.models.PartItem;
+import core.partsModule.models.obj.PartItem;
 
 import java.awt.*;
 import java.awt.event.ActionListener;

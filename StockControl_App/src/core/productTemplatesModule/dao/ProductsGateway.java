@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import core.productTemplatesModule.models.ProductItem;
+import core.productTemplatesModule.models.obj.ProductItem;
 import core.settings.models.AppPreferences;
 
 public class ProductsGateway implements ProductsDao{

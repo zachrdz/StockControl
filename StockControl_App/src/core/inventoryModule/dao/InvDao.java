@@ -7,8 +7,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
 
-import core.inventoryModule.models.InvItem;
-import core.inventoryModule.models.InvItemExt;
+import core.inventoryModule.models.obj.InvItem;
+import core.inventoryModule.models.obj.InvItemExt;
 
 /**
  * @author Zach

@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.table.AbstractTableModel;
 
 import core.productTemplatesModule.dao.ProductsGateway;
+import core.productTemplatesModule.models.obj.ProductItem;
 import core.settings.models.AppPreferences;
 
 /**

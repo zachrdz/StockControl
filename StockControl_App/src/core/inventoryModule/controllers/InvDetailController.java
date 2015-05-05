@@ -7,11 +7,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
 
-import core.inventoryModule.models.InvItem;
 import core.inventoryModule.models.InvTableModel;
+import core.inventoryModule.models.obj.InvItem;
 import core.inventoryModule.views.InvDetailView;
-import core.mdi.MasterFrame;
-import core.settings.models.Function;
+import core.mdi.models.MasterFrame;
+import core.session.models.obj.Function;
 
 public class InvDetailController implements ActionListener{
 	public static final String UPDATE_INV_COMMAND = "UPDATE_INV_COMMAND";

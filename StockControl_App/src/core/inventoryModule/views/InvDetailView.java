@@ -7,10 +7,10 @@ package core.inventoryModule.views;
 import javax.swing.*;
 
 import core.inventoryModule.controllers.InvDetailController;
-import core.inventoryModule.models.InvItem;
-import core.mdi.MasterFrame;
-import core.partsModule.models.PartItem;
-import core.productTemplatesModule.models.ProductItem;
+import core.inventoryModule.models.obj.InvItem;
+import core.mdi.models.MasterFrame;
+import core.partsModule.models.obj.PartItem;
+import core.productTemplatesModule.models.obj.ProductItem;
 
 import java.awt.*;
 import java.awt.event.ActionListener;

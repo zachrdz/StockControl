@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import core.partsModule.dao.PartsGateway;
-import core.partsModule.models.PartItem;
+import core.partsModule.models.obj.PartItem;
 import core.settings.models.AppPreferences;
 
 /**

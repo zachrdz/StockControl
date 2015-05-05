@@ -8,8 +8,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import core.inventoryModule.dao.InvGateway;
-import core.inventoryModule.models.InvItem;
-import core.inventoryModule.models.InvItemExt;
+import core.inventoryModule.models.obj.InvItem;
+import core.inventoryModule.models.obj.InvItemExt;
 import core.settings.models.AppPreferences;
 
 /**

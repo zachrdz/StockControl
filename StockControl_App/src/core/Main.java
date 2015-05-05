@@ -1,7 +1,7 @@
 package core;
 
-import core.settings.views.LoginInfoView;
-import core.mdi.MasterFrame;
+import core.mdi.models.MasterFrame;
+import core.session.views.LoginInfoView;
 
 public class Main {
 	// main: launch the JFrame on the EDT

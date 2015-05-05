@@ -7,8 +7,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import core.partsModule.models.PartItem;
 import core.partsModule.models.PartsTableModel;
+import core.partsModule.models.obj.PartItem;
 import core.settings.models.AppPreferences;
 
 /**

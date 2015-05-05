@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.table.AbstractTableModel;
 
 import core.inventoryModule.dao.InvGateway;
+import core.inventoryModule.models.obj.InvItem;
+import core.inventoryModule.models.obj.InvItemExt;
 import core.settings.models.AppPreferences;
 
 public class InvTableModel extends AbstractTableModel {

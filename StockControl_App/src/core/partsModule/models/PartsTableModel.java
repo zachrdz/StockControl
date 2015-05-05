@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.table.AbstractTableModel;
 
 import core.partsModule.dao.PartsGateway;
+import core.partsModule.models.obj.PartItem;
 import core.settings.models.AppPreferences;
 
 public class PartsTableModel extends AbstractTableModel{

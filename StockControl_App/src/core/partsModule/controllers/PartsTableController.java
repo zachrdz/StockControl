@@ -9,13 +9,13 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 
-import core.mdi.MasterFrame;
-import core.partsModule.models.PartItem;
+import core.mdi.models.MasterFrame;
 import core.partsModule.models.PartsTableModel;
+import core.partsModule.models.obj.PartItem;
 import core.partsModule.views.PartsAddView;
 import core.partsModule.views.PartsDetailView;
 import core.partsModule.views.PartsTableView;
-import core.settings.models.Function;
+import core.session.models.obj.Function;
 
 
 public class PartsTableController implements ActionListener, ListSelectionListener {

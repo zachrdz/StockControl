@@ -16,9 +16,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import core.mdi.MasterFrame;
+import core.mdi.models.MasterFrame;
 import core.productTemplatesModule.controllers.ProductsDetailController;
-import core.productTemplatesModule.models.ProductItem;
+import core.productTemplatesModule.models.obj.ProductItem;
 
 /**
  * @author Zach

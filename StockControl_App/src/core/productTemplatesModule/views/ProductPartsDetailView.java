@@ -11,10 +11,10 @@ import javax.swing.*;
 
 import org.jdesktop.swingx.autocomplete.*;
 
-import core.mdi.MasterFrame;
-import core.partsModule.models.PartItem;
+import core.mdi.models.MasterFrame;
+import core.partsModule.models.obj.PartItem;
 import core.productTemplatesModule.controllers.ProductPartsDetailController;
-import core.productTemplatesModule.models.ProductPartItem;
+import core.productTemplatesModule.models.obj.ProductPartItem;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 
 import core.productTemplatesModule.dao.ProductPartsGateway;
+import core.productTemplatesModule.models.obj.ProductPartItem;
+import core.productTemplatesModule.models.obj.ProductPartItemExt;
 import core.settings.models.AppPreferences;
 
 /**

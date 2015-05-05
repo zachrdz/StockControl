@@ -9,9 +9,9 @@ package core.productTemplatesModule.controllers;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import core.mdi.MasterFrame;
-import core.productTemplatesModule.models.ProductPartItem;
+import core.mdi.models.MasterFrame;
 import core.productTemplatesModule.models.ProductPartsTableModel;
+import core.productTemplatesModule.models.obj.ProductPartItem;
 import core.productTemplatesModule.views.ProductPartsDetailView;
 
 public class ProductPartsDetailController implements ActionListener{

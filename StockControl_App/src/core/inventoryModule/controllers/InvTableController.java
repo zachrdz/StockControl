@@ -9,13 +9,13 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 
-import core.inventoryModule.models.InvItem;
 import core.inventoryModule.models.InvTableModel;
+import core.inventoryModule.models.obj.InvItem;
 import core.inventoryModule.views.InvAddView;
 import core.inventoryModule.views.InvDetailView;
 import core.inventoryModule.views.InvTableView;
-import core.mdi.MasterFrame;
-import core.settings.models.Function;
+import core.mdi.models.MasterFrame;
+import core.session.models.obj.Function;
 
 
 public class InvTableController implements ActionListener, ListSelectionListener {

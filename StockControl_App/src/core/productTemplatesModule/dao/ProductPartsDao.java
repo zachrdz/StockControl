@@ -6,8 +6,8 @@ package core.productTemplatesModule.dao;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import core.productTemplatesModule.models.ProductPartItem;
-import core.productTemplatesModule.models.ProductPartItemExt;
+import core.productTemplatesModule.models.obj.ProductPartItem;
+import core.productTemplatesModule.models.obj.ProductPartItemExt;
 
 /**
  * @author Zach

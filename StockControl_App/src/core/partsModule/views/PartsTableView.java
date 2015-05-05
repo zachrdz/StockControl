@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import core.mdi.MasterFrame;
+import core.mdi.models.MasterFrame;
 import core.partsModule.controllers.PartsTableController;
 import core.partsModule.models.PartsTableModel;
 

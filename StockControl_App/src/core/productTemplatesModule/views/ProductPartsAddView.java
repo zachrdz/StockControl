@@ -10,8 +10,8 @@ import javax.swing.*;
 
 import org.jdesktop.swingx.autocomplete.*;
 
-import core.mdi.MasterFrame;
-import core.partsModule.models.PartItem;
+import core.mdi.models.MasterFrame;
+import core.partsModule.models.obj.PartItem;
 import core.productTemplatesModule.controllers.ProductPartsAddController;
 
 import java.awt.*;
