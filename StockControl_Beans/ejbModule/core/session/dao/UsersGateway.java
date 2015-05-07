@@ -24,6 +24,12 @@ public class UsersGateway implements UsersDao, Serializable {
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
 	
+	public static final String DATABASE_URL = "jdbc:mysql://coderoot.co:3306/CS4743";
+	public static final String DATABASE_USER = "zjrodr0709";
+	public static final String DATABASE_PWD = "2487Zach";
+	public static final String MYSQL_AUTO_RECONNECT = "autoReconnect";
+	public static final String MYSQL_MAX_RECONNECTS = "maxReconnects";
+	
 	public UsersGateway(){
 		//set up the driver
 		try {
@@ -36,8 +42,16 @@ public class UsersGateway implements UsersDao, Serializable {
 		//System.out.println("MySQL JDBC driver registered.");
 		
 		try {
-			this.connection = DriverManager.getConnection("jdbc:mysql://coderoot.co:3306/CS4743","zjrodr0709", "2487Zach");
+			java.util.Properties connProperties = new java.util.Properties();
+			connProperties.put("user", DATABASE_USER);
+			connProperties.put("password", DATABASE_PWD);
+			
+			connProperties.put(MYSQL_AUTO_RECONNECT, "true");
+			connProperties.put(MYSQL_MAX_RECONNECTS, "20");
+			
+			this.connection = DriverManager.getConnection(DATABASE_URL, connProperties);
 			System.out.println("DB connection for UsersGateway successful.");
+			
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -275,17 +289,6 @@ public class UsersGateway implements UsersDao, Serializable {
 		
 		//No duplicates found
 		return pwd;
-	}
-
-	@Override
-	public void doClose() {
-		try {
-			connection.close();
-			System.out.println("DB connection for UsersGateway has been closed.");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 }

@@ -26,4 +26,8 @@ public class InvItemLogRecord implements Serializable{
 	public void setInvEntryDesc(String invEntryDesc) {
 		this.invEntryDesc = invEntryDesc;
 	}
+	@Override
+	public String toString() {
+		return invEntryDate + " - " + invEntryDesc;
+	}
 }

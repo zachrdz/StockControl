@@ -26,6 +26,5 @@ public interface UsersDao {
 	public ArrayList<Function> doGetRoleFunctionList(Role role);
 	public ArrayList<Function> doGetFunctionList();
 	public String doGetUserLogonByID(User user);
-	public void doClose();
 	
 }

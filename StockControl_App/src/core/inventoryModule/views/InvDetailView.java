@@ -26,6 +26,13 @@ public class InvDetailView extends JInternalFrame{
 	@SuppressWarnings("rawtypes")
 	private JComboBox iLocation;
 	private JTextField iQuantity;
+	private JPanel northPanel;
+	private JPanel centerPanel;
+	private JPanel southPanel;
+	private JScrollPane southScrollPane;
+	private GridLayout gLayoutNorth;
+	private GridLayout gLayoutCenter;
+	private GridLayout gLayoutSouth;
 	private MasterFrame m;
 	private static final long serialVersionUID = 1L;
 
@@ -36,7 +43,7 @@ public class InvDetailView extends JInternalFrame{
 	}
 	
 	public void run(){
-		createJFrame("Inventory Detail", 470, 320);
+		createJFrame("Inventory Detail", 470, 620);
 
 		createJLabel("Part: ", "invPartID", "Arial", 12);
 		createJLabel("Product: ", "invProductID", "Arial", 12);
@@ -48,18 +55,38 @@ public class InvDetailView extends JInternalFrame{
 		createJButton("Delete");
 		createJButton("Update");
 		
+		createJLabel("", "", "Arial", 12);
+		createJLabel("", "", "Arial", 12);
+		
+		createJLabel("Inventory Item Log: ", "", "Arial", 12);
+		createJLabel("", "", "Arial", 12);
+		
+		displayInvItemLog();
+		
 		endJFrame();	
 	}
 	
 	public void createJFrame(String name, int width, int height){
 		title = name;
-		setSize(width, height);
-		getContentPane().setSize(width, height);
 		
-		GridLayout gLayout = new GridLayout(5,2);
-    	gLayout.setHgap(15);
+		gLayoutNorth = new GridLayout(7,2);
+    	gLayoutNorth.setHgap(15);
+    	northPanel = new JPanel();
+    	northPanel.setLayout(gLayoutNorth);
+    	
+    	gLayoutCenter = new GridLayout(1,1);
+    	gLayoutCenter.setHgap(15);
+    	centerPanel = new JPanel();
+    	centerPanel.setLayout(gLayoutCenter);
+    	
+    	gLayoutSouth = new GridLayout(1,1);
+    	gLayoutSouth.setHgap(15);
+    	southPanel = new JPanel();
+    	southPanel.setLayout(gLayoutSouth);
+    	
+    	southScrollPane = new JScrollPane(southPanel);
+		southScrollPane.setPreferredSize(new Dimension(520, 100));
 		
-		getContentPane().setLayout(gLayout);
 	}
 	
 	public void endJFrame(){
@@ -68,7 +95,12 @@ public class InvDetailView extends JInternalFrame{
         maximizable = true;
         iconable = true;
         
+        getContentPane().add(BorderLayout.NORTH, northPanel);
+        getContentPane().add(BorderLayout.CENTER, centerPanel);
+        getContentPane().add(BorderLayout.SOUTH, southScrollPane);
+        
         pack();
+        
         Dimension desktopSize = m.getDesktop().getSize();
 		Dimension jInternalFrameSize = getSize();
 		setLocation((desktopSize.width - jInternalFrameSize.width)/2, (desktopSize.height- jInternalFrameSize.height)/2);
@@ -94,8 +126,8 @@ public class InvDetailView extends JInternalFrame{
 					}
 				}
 				if(detailInv.getInvPartID() != 0){
-					getContentPane().add(label);
-					getContentPane().add(new JLabel(part.getPartName() + " - " + part.getPartNo()));
+					northPanel.add(label);
+					northPanel.add(new JLabel(part.getPartName() + " - " + part.getPartNo()));
 				}
 				break;				
 			case "invProductID" :	
@@ -108,32 +140,38 @@ public class InvDetailView extends JInternalFrame{
 					}
 				}
 				if(detailInv.getInvProductID() != 0){
-					getContentPane().add(label);
-					getContentPane().add(new JLabel(product.getProductDesc() + " - " + product.getProductNo()));
+					northPanel.add(label);
+					northPanel.add(new JLabel(product.getProductDesc() + " - " + product.getProductNo()));
 				}
 				break;	
 			case "invLocation" : 
 				String[] iLocationOptions = { "Unknown", "Facility 1 Warehouse 1", "Facility 1 Warehouse 2", "Facility 2" };
 				iLocation = new JComboBox(iLocationOptions);
 				iLocation.setSelectedItem(detailInv.getInvLocation());
-				getContentPane().add(label);
-				getContentPane().add(iLocation);
+				northPanel.add(label);
+				northPanel.add(iLocation);
 				break;
 			case "invQuantity" : 
 				iQuantity = new JTextField(Integer.toString(detailInv.getInvQuantity())); 
-				getContentPane().add(label);
-				getContentPane().add(iQuantity); 
-				break;
-			default : getContentPane().add(label); break;
+				northPanel.add(label);
+				northPanel.add(iQuantity); 
+				break;			
+			default : northPanel.add(label); break;
 		}	
 	}
 	
 	public void createJButton(String buttonText){
 		switch(buttonText){
-			case "Update" : updateBtn = new JButton(buttonText); getContentPane().add(updateBtn); updateBtn.setActionCommand(InvDetailController.UPDATE_INV_COMMAND); break;
-			case "Delete" : deleteBtn = new JButton(buttonText); getContentPane().add(deleteBtn); deleteBtn.setActionCommand(InvDetailController.DELETE_INV_COMMAND); break;
+			case "Update" : updateBtn = new JButton(buttonText); northPanel.add(updateBtn); updateBtn.setActionCommand(InvDetailController.UPDATE_INV_COMMAND); break;
+			case "Delete" : deleteBtn = new JButton(buttonText); northPanel.add(deleteBtn); deleteBtn.setActionCommand(InvDetailController.DELETE_INV_COMMAND); break;
 			default : break;
 		}
+	}
+	
+	public void displayInvItemLog() {
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		JList logList = new JList(detailInv.getLog(m.getInvLogger()).toArray());
+		southPanel.add(logList);
 	}
 
 	public InvItem getInv(){
@@ -177,5 +215,5 @@ public class InvDetailView extends JInternalFrame{
 	public JButton getDeleteBtn() {
 		return deleteBtn;
 	}
-
+	
 }

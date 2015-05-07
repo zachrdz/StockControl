@@ -130,7 +130,17 @@ public class InvItem {
 		this.invProductID = invProductID;
 	}
 	
-	public ArrayList<InvItemLogRecord> getLog(InvLoggingBeanRemote invLogger) {
-		return invLogger.getInvItemLog(this.invID);
+	public ArrayList<String> getLog(InvLoggingBeanRemote invLogger) {
+		ArrayList<InvItemLogRecord> log = invLogger.getInvItemLog(this.invID);
+		ArrayList<String> tmp = new ArrayList<String>();
+		
+		if(null != log){
+			for(InvItemLogRecord rec : log){
+				tmp.add(rec.toString());
+			}
+		}
+		
+		return tmp;
 	}
+	
 }
