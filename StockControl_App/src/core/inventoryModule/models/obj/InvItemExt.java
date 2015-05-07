@@ -3,9 +3,6 @@
  */
 package core.inventoryModule.models.obj;
 
-
-
-
 /**
  * @author hgv265
  *

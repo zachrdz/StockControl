@@ -2,9 +2,9 @@ package core.inventoryModule.dao;
 
 import java.util.ArrayList;
 
-import core.inventoryModule.models.obj.InvLogItem;
+import core.inventoryModule.models.obj.InvItemLogRecord;
 
 public interface InvLoggingDao {
-	public ArrayList<InvLogItem> doRead();
-	public InvLogItem doGetLogItemByID(int id);
+	public ArrayList<InvItemLogRecord> doRead(int invID);
+	public void doAdd(InvItemLogRecord invItemLogRec);
 }

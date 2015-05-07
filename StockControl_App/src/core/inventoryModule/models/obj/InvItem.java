@@ -3,8 +3,11 @@
  */
 package core.inventoryModule.models.obj;
 
+import java.util.ArrayList;
+
 import javax.swing.JOptionPane;
 
+import core.inventoryModule.remote.InvLoggingBeanRemote;
 import core.mdi.models.MasterFrame;
 
 /**
@@ -125,5 +128,9 @@ public class InvItem {
 
 	public void setInvProductID(int invProductID) {
 		this.invProductID = invProductID;
+	}
+	
+	public ArrayList<InvItemLogRecord> getLog(InvLoggingBeanRemote invLogger) {
+		return invLogger.getInvItemLog(this.invID);
 	}
 }

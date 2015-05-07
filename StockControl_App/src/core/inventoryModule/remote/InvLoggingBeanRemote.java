@@ -1,8 +1,13 @@
 package core.inventoryModule.remote;
 
+import java.util.ArrayList;
+
 import javax.ejb.Remote;
 
-@Remote
-public class InvLoggingBeanRemote {
+import core.inventoryModule.models.obj.InvItemLogRecord;
 
+@Remote
+public interface InvLoggingBeanRemote {
+	public void addInvItemLogRecord(InvItemLogRecord invItemLogRec);
+	public ArrayList<InvItemLogRecord> getInvItemLog(int invID);
 }

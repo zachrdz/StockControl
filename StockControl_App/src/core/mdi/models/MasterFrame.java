@@ -30,6 +30,7 @@ import javax.imageio.ImageIO;
 
 import core.inventoryModule.controllers.InvTableController;
 import core.inventoryModule.models.InvTableModel;
+import core.inventoryModule.remote.InvLoggingBeanRemote;
 import core.inventoryModule.views.InvTableView;
 import core.partsModule.controllers.PartsTableController;
 import core.partsModule.models.PartsTableModel;
@@ -54,6 +55,7 @@ public class MasterFrame extends JFrame {
 	private BufferedImage backgroundImage;
 
 	private AuthenticationBeanRemote authenticator = null;
+	private InvLoggingBeanRemote invLogger = null;
 	private Session session = null;
 
 	public MasterFrame(String title) {
@@ -324,6 +326,8 @@ public class MasterFrame extends JFrame {
 			InitialContext itx = new InitialContext(props);
 			authenticator = (AuthenticationBeanRemote) itx
 					.lookup("java:global/StockControl_Beans/AuthenticationBean!core.session.remote.AuthenticationBeanRemote");
+			invLogger =  (InvLoggingBeanRemote) itx
+					.lookup("java:global/StockControl_Beans/InvLoggingBean!core.inventoryModule.remote.InvLoggingBeanRemote");
 		} catch (NamingException e1) {
 			e1.printStackTrace();
 		}
@@ -379,6 +383,14 @@ public class MasterFrame extends JFrame {
 
 	public AuthenticationBeanRemote getAuthenticator() {
 		return authenticator;
+	}
+
+	public InvLoggingBeanRemote getInvLogger() {
+		return invLogger;
+	}
+
+	public void setInvLogger(InvLoggingBeanRemote invLogger) {
+		this.invLogger = invLogger;
 	}
 
 }

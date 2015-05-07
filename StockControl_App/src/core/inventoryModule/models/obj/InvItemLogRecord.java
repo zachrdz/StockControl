@@ -2,17 +2,17 @@ package core.inventoryModule.models.obj;
 
 import java.io.Serializable;
 
-public class InvLogItem implements Serializable{
+public class InvItemLogRecord implements Serializable{
 	private static final long serialVersionUID = 1L;
-	private int invLogID;
+	private int invID;
 	private String invEntryDate;
 	private String invEntryDesc;
 	
-	public int getInvLogID() {
-		return invLogID;
+	public int getInvID() {
+		return invID;
 	}
-	public void setInvLogID(int invLogID) {
-		this.invLogID = invLogID;
+	public void setInvID(int invID) {
+		this.invID = invID;
 	}
 	public String getInvEntryDate() {
 		return invEntryDate;
