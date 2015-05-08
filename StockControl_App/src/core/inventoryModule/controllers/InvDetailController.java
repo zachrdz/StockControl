@@ -5,8 +5,6 @@ package core.inventoryModule.controllers;
  */
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import core.inventoryModule.models.InvTableModel;
@@ -102,25 +100,25 @@ public class InvDetailController implements ActionListener{
     
     public void logChanges(InvItem inv){
     	InvItemLogRecord tmp = new InvItemLogRecord();
-    	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    	//DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     	Date date = new Date();
     	
     	// Compare new quantity w/original quantity to see if it was changed
     	if(inv.getInvQuantity() != view.getInv().getInvQuantity()){
     		tmp.setInvID(inv.getInvID());
-        	tmp.setInvEntryDate(dateFormat.format(date));
+        	tmp.setInvEntryDate(date);
     		tmp.setInvEntryDesc("Changed quantity from '" + view.getInv().getInvQuantity() + "' to '" + inv.getInvQuantity() + "' [" + m.getSession().getUser().getFullName() + "]");
     		
-    		m.getInvLogger().addInvItemLogRecord(tmp);
+    		m.getInvTableModel().addInvItemLogRecord(tmp);
     	}
     	
     	// Compare new location w/original location to see if it was changed
     	if(!inv.getInvLocation().equals(view.getInv().getInvLocation())){
     		tmp.setInvID(inv.getInvID());
-        	tmp.setInvEntryDate(dateFormat.format(date));
+        	tmp.setInvEntryDate(date);
     		tmp.setInvEntryDesc("Changed location from '" + view.getInv().getInvLocation() + "' to '" + inv.getInvLocation() + "' [" + m.getSession().getUser().getFullName() + "]");
-    	
-    		m.getInvLogger().addInvItemLogRecord(tmp);    	
+    	    
+    		m.getInvTableModel().addInvItemLogRecord(tmp);   	
     	}
     }
     

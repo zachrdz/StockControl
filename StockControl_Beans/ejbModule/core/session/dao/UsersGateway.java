@@ -290,5 +290,15 @@ public class UsersGateway implements UsersDao, Serializable {
 		//No duplicates found
 		return pwd;
 	}
+	
+	public void doClose(){
+		try {
+			connection.close();
+			System.out.println("EJB MySQL DB connection for UsersGateway has been closed.");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }

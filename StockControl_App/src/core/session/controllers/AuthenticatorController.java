@@ -12,6 +12,7 @@ import core.session.views.AuthenticatorView;
 
 public class AuthenticatorController implements ActionListener{
 	public static final String LOGIN_COMMAND = "LOGIN_COMMAND";
+	public static final String CANCEL_COMMAND = "CANCEL_COMMAND";
 	
 	private AuthenticatorView view;
 	private MasterFrame m;
@@ -30,20 +31,25 @@ public class AuthenticatorController implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		switch (e.getActionCommand()) {
-		case LOGIN_COMMAND:
-			User credentials = getTextInput();
-			Session session = m.getAuthenticator().authenticateUser(credentials.getEmail(), credentials.getPassword());
-			
-			if(null != session){
-				m.setSession(session);
-				m.updateJMenuBar();
+			case LOGIN_COMMAND:
+				User credentials = getTextInput();
+				Session session = m.getAuthenticator().authenticateUser(credentials.getEmail(), credentials.getPassword());
+				
+				if(null != session){
+					m.setSession(session);
+					m.updateJMenuBar();
+					view.getFrame().dispose();
+				}
+				else {
+					m.displayChildMessage("Invalid Credentials!");
+				}
+				break;
+			case CANCEL_COMMAND:
 				view.getFrame().dispose();
-			}
-			else {
-				m.displayChildMessage("Invalid Credentials!");
-			}
-			break;
+				m.getLoginMenuItem().setVisible(true);
+			default: break;
 		}
+		
 	}
     
     private User getTextInput(){    	

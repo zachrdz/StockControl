@@ -1,15 +1,17 @@
 package core.inventoryModule.models;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Properties;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.swing.table.AbstractTableModel;
 
 import core.inventoryModule.dao.InvGateway;
+import core.inventoryModule.dao.remote.InvItemLogGatewayRemote;
 import core.inventoryModule.models.obj.InvItem;
 import core.inventoryModule.models.obj.InvItemExt;
+import core.inventoryModule.models.obj.InvItemLogRecord;
 import core.settings.models.AppPreferences;
 
 public class InvTableModel extends AbstractTableModel {
@@ -17,7 +19,8 @@ public class InvTableModel extends AbstractTableModel {
 	private ArrayList<String> columns = new ArrayList<String>();
 	private ArrayList<InvItemExt> rows = new ArrayList<InvItemExt>();
 	private String locFilter;
-	private InvGateway gateway;
+	private InvGateway invGateway;
+	private InvItemLogGatewayRemote logGateway;
 	private AppPreferences AP;
 	
 	public InvTableModel(AppPreferences AP){
@@ -33,18 +36,18 @@ public class InvTableModel extends AbstractTableModel {
 		addColumn("Quantity");
 		loadTableData();
 		
-		listenForDBChanges(5);
+		initLog();
 	}
 	
 	public void loadTableData(){
-		gateway = new InvGateway(AP);
-		rows = gateway.doGetInvListExt(locFilter);
+		invGateway = new InvGateway(AP);
+		rows = invGateway.doGetInvListExt(locFilter);
 
 		fireTableStructureChanged();
 	}
 	
 	public void refreshTableData(String locFilter){
-		rows = gateway.doGetInvListExt(locFilter);
+		rows = invGateway.doGetInvListExt(locFilter);
 		this.fireTableDataChanged();
 	}
 	
@@ -63,18 +66,18 @@ public class InvTableModel extends AbstractTableModel {
 	}
     
 	public void addRow(InvItem inv) {
-		gateway.doAdd(inv);
+		invGateway.doAdd(inv);
 		refreshTableData(locFilter);
 	}
 	
 	//Remove row from View table and SQL table by invID
 	public void removeRow(InvItem inv){
-		gateway.doDelete(inv);
+		invGateway.doDelete(inv);
 		refreshTableData(locFilter);
 	}
 
 	public void updateRow(InvItem inv){
-		gateway.doUpdate(inv);
+		invGateway.doUpdate(inv);
 		refreshTableData(locFilter);
 	}
 	
@@ -138,11 +141,11 @@ public class InvTableModel extends AbstractTableModel {
 	}
 	
 	public boolean checkForDuplicate(InvItem inv){
-		return gateway.doCheckDuplicate(inv);
+		return invGateway.doCheckDuplicate(inv);
 	}
 	
 	public boolean checkCanAdd(InvItem inv){
-		return gateway.doCheckAdd(inv);
+		return invGateway.doCheckAdd(inv);
 	}
 	
 	public void setLocFilter(String locFilter){
@@ -154,25 +157,42 @@ public class InvTableModel extends AbstractTableModel {
 	}
 	
 	public Date getInvItemLastUpdate(InvItem inv){
-		return gateway.getInvItemLastUpdateTS(inv);
+		return invGateway.getInvItemLastUpdateTS(inv);
 	}
 	
 	public InvItem getUpdatedInvItem(InvItem inv){
-		return gateway.doGetInvRec(inv);
+		return invGateway.doGetInvRec(inv);
 	}
-	
-	public void listenForDBChanges(int sec){
-		ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
-		exec.scheduleAtFixedRate(new Runnable() {
-		  @Override
-		  public void run() {
-			  if(gateway.doPollChanges()) refreshTableData(locFilter);
-		  }
-		}, 0, sec, TimeUnit.SECONDS);
-	}
-	
+
 	public void exitModule(){
-		gateway.doClose();
+		invGateway.doClose();
+	}
+	
+	private void initLog() {
+		try {
+			Properties props = new Properties();
+			props.put("org.omg.CORBA.ORBInitialHost", "localhost");
+			props.put("org.omg.CORBA.ORBInitialPort", "3700");
+
+			InitialContext itx = new InitialContext(props);
+			logGateway =  (InvItemLogGatewayRemote) itx
+					.lookup("java:global/StockControl_Beans/InvItemLogGateway!core.inventoryModule.dao.remote.InvItemLogGatewayRemote");
+			
+		} catch (NamingException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	public InvItemLogGatewayRemote getLogGateway() {
+		return logGateway;
+	}
+	
+	public ArrayList<InvItemLogRecord> getInvItemLog(int invID) {
+		return logGateway.doRead(invID);
+	}
+    
+	public void addInvItemLogRecord(InvItemLogRecord invItemLogRec) {
+		logGateway.doAdd(invItemLogRec);
 	}
 	
 }

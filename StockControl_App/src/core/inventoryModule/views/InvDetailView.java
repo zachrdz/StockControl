@@ -4,6 +4,7 @@ package core.inventoryModule.views;
  * @author hgv265
  *
  */
+
 import javax.swing.*;
 
 import core.inventoryModule.controllers.InvDetailController;
@@ -14,6 +15,7 @@ import core.productTemplatesModule.models.obj.ProductItem;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.Properties;
 
 
 public class InvDetailView extends JInternalFrame{
@@ -170,7 +172,7 @@ public class InvDetailView extends JInternalFrame{
 	
 	public void displayInvItemLog() {
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		JList logList = new JList(detailInv.getLog(m.getInvLogger()).toArray());
+		JList logList = new JList(detailInv.getLog(m.getInvTableModel()).toArray());
 		southPanel.add(logList);
 	}
 

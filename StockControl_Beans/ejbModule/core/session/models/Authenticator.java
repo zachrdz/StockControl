@@ -6,6 +6,7 @@ package core.session.models;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import javax.annotation.PreDestroy;
 import javax.ejb.Stateless;
 
 import core.session.dao.UsersGateway;
@@ -13,19 +14,19 @@ import core.session.models.obj.Function;
 import core.session.models.obj.Role;
 import core.session.models.obj.Session;
 import core.session.models.obj.User;
-import core.session.remote.AuthenticationBeanRemote;
+import core.session.models.remote.AuthenticatorRemote;
 
 /**
  * @author Zach
  *
  */
 
-@Stateless(name="AuthenticationBean")
-public class AuthenticationBean implements AuthenticationBeanRemote, Serializable{
+@Stateless(name="Authenticator")
+public class Authenticator implements AuthenticatorRemote, Serializable{
 	private static final long serialVersionUID = 1L;
 	private UsersGateway gateway;
 	
-	public AuthenticationBean(){
+	public Authenticator(){
 		gateway = new UsersGateway();
 	}
 	
@@ -51,5 +52,10 @@ public class AuthenticationBean implements AuthenticationBeanRemote, Serializabl
 	    
 		System.out.println("Invalid User Credentials!");
 	    return null;
+	}
+	
+	@PreDestroy
+	public void closeGatewayConnection(){
+		gateway.doClose();
 	}
 }

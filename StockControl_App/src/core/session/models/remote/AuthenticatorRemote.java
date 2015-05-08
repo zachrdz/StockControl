@@ -1,4 +1,4 @@
-package core.session.remote;
+package core.session.models.remote;
 
 
 import javax.ejb.Remote;
@@ -6,6 +6,6 @@ import javax.ejb.Remote;
 import core.session.models.obj.Session;
 
 @Remote
-public interface AuthenticationBeanRemote {
+public interface AuthenticatorRemote {
 	public Session authenticateUser(String email, String password);
 }

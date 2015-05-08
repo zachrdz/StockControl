@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -25,7 +24,7 @@ import core.session.controllers.AuthenticatorController;
 public class AuthenticatorView extends JInternalFrame{
 	private static final long serialVersionUID = 1L;
 
-	private JButton loginBtn;
+	private JButton loginBtn, cancelBtn;
 
 	private JTextField username;
 	private JPasswordField password;
@@ -34,39 +33,36 @@ public class AuthenticatorView extends JInternalFrame{
 		title = "Login";
 		setSize(450, 200);
     	
-		GridLayout gLayoutParent = new GridLayout(2,1);
-    	GridLayout gLayoutChild1 = new GridLayout(2,2);
-    	GridLayout gLayoutChild2 = new GridLayout(2,1);
-    	this.setLayout(gLayoutParent);
+		GridLayout gLayoutParent = new GridLayout(4,2);
+		gLayoutParent.setHgap(15);
+		this.setLayout(gLayoutParent);
+
     	
-    	JPanel childPane1 = new JPanel();
-        childPane1.setLayout(gLayoutChild1);
-    	
-    	gLayoutChild1.setHgap(15);
         JLabel usernameLabel =new JLabel("User Name: ");
         usernameLabel.setFont(new Font("Arial",Font.TRUETYPE_FONT,12));
-        childPane1.add(usernameLabel);
+        add(usernameLabel);
         username = new JTextField("");
-        childPane1.add(username);
+        add(username);
         
         JLabel passwordLabel =new JLabel("Password: ");
         passwordLabel.setFont(new Font("Arial",Font.TRUETYPE_FONT,12));
-        childPane1.add(passwordLabel);
+        add(passwordLabel);
         password = new JPasswordField("");
-        childPane1.add(password);
-        this.add(childPane1);
+        add(password);
         
-        JPanel childPane2 = new JPanel();
-        childPane2.setLayout(gLayoutChild2);
-        childPane2.add(new JLabel(""));
- 
-        loginBtn = new JButton("Login");        
-        loginBtn.setFont(new Font("Arial",Font.TRUETYPE_FONT,12));
-        childPane2.add(loginBtn); 
+        add(new JLabel(""));
+        add(new JLabel(""));
         
-        this.add(childPane2);
+        cancelBtn = new JButton("Cancel");        
+        cancelBtn.setFont(new Font("Arial",Font.TRUETYPE_FONT,12));    
+        add(cancelBtn); 
+        
+        loginBtn = new JButton("Ok");        
+        loginBtn.setFont(new Font("Arial",Font.TRUETYPE_FONT,12));    
+        add(loginBtn); 
         
         loginBtn.setActionCommand(AuthenticatorController.LOGIN_COMMAND);
+        cancelBtn.setActionCommand(AuthenticatorController.CANCEL_COMMAND);
         
         resizable = false;
         closable = false;
@@ -91,6 +87,7 @@ public class AuthenticatorView extends JInternalFrame{
 	
 	public void addButtonListener(ActionListener listener) {
 		loginBtn.addActionListener(listener);
+		cancelBtn.addActionListener(listener);
 	}
 
 	public JTextField getUsername() {

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-import core.inventoryModule.remote.InvLoggingBeanRemote;
+import core.inventoryModule.models.InvTableModel;
 import core.mdi.models.MasterFrame;
 
 /**
@@ -130,8 +130,8 @@ public class InvItem {
 		this.invProductID = invProductID;
 	}
 	
-	public ArrayList<String> getLog(InvLoggingBeanRemote invLogger) {
-		ArrayList<InvItemLogRecord> log = invLogger.getInvItemLog(this.invID);
+	public ArrayList<String> getLog(InvTableModel invTableModel) {
+		ArrayList<InvItemLogRecord> log = invTableModel.getInvItemLog(this.invID);
 		ArrayList<String> tmp = new ArrayList<String>();
 		
 		if(null != log){

@@ -9,9 +9,11 @@ package core.inventoryModule.controllers;
  */
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 import core.inventoryModule.models.InvTableModel;
 import core.inventoryModule.models.obj.InvItem;
+import core.inventoryModule.models.obj.InvItemLogRecord;
 import core.inventoryModule.views.InvAddView;
 import core.mdi.models.MasterFrame;
 import core.session.models.obj.Function;
@@ -53,6 +55,7 @@ public class InvAddController implements ActionListener{
 			
 			if(invAdd.validate(m) && !dupCheck && canAddCheck){
 				tableModel.addRow(invAdd);
+				logChanges(invAdd);
 				view.getFrame().dispose();
 			}
 			if(dupCheck){
@@ -82,6 +85,27 @@ public class InvAddController implements ActionListener{
     	newInv.setInvQuantity(Integer.parseInt(iQuantity));
 
     	return newInv;
+    }
+    
+    public void logChanges(InvItem inv){
+    	InvItemLogRecord tmp = new InvItemLogRecord();
+    	//DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    	Date date = new Date();
+    	
+    	String stockType = (inv.getInvPartID() != 0) ? "Part" : "Product";
+    	
+    	// Loop through updated table rows to fetch ID that was created for this record
+    	for(InvItem invRows : tableModel.getRows()){
+    		if(invRows.getInvPartID() == inv.getInvPartID() && invRows.getInvProductID() == inv.getInvProductID()){
+    			tmp.setInvID(invRows.getInvID());
+    			break;
+    		}
+    	}
+
+    	tmp.setInvEntryDate(date);
+		tmp.setInvEntryDesc(stockType + " created with quantity '" + inv.getInvQuantity() + "' to location '" + inv.getInvLocation() + "' [" + m.getSession().getUser().getFullName() + "]");
+	    
+		m.getInvTableModel().addInvItemLogRecord(tmp);
     }
 
 	

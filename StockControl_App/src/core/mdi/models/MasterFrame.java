@@ -24,13 +24,14 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.*;
 
 import java.io.File;
+import java.rmi.RemoteException;
 import java.util.Properties;
 
 import javax.imageio.ImageIO;
 
 import core.inventoryModule.controllers.InvTableController;
+import core.inventoryModule.models.InvItemLogObserver;
 import core.inventoryModule.models.InvTableModel;
-import core.inventoryModule.remote.InvLoggingBeanRemote;
 import core.inventoryModule.views.InvTableView;
 import core.partsModule.controllers.PartsTableController;
 import core.partsModule.models.PartsTableModel;
@@ -41,7 +42,7 @@ import core.productTemplatesModule.views.ProductsTableView;
 import core.session.controllers.AuthenticatorController;
 import core.session.models.obj.Function;
 import core.session.models.obj.Session;
-import core.session.remote.AuthenticationBeanRemote;
+import core.session.models.remote.AuthenticatorRemote;
 import core.session.views.AuthenticatorView;
 import core.settings.models.AppPreferences;
 
@@ -53,9 +54,10 @@ public class MasterFrame extends JFrame {
 	private ProductsTableModel productsTableModel;
 	private AppPreferences AP;
 	private BufferedImage backgroundImage;
+	private JMenuItem loginMenuItem;
+	private InvItemLogObserver invItemLogObserver;
 
-	private AuthenticationBeanRemote authenticator = null;
-	private InvLoggingBeanRemote invLogger = null;
+	private AuthenticatorRemote authenticator = null;
 	private Session session = null;
 
 	public MasterFrame(String title) {
@@ -115,14 +117,16 @@ public class MasterFrame extends JFrame {
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
-				if (MasterFrame.this.getInvTableModel() != null)
+				if (MasterFrame.this.getInvTableModel() != null){
 					MasterFrame.this.getInvTableModel().exitModule();
-				;
-				if (MasterFrame.this.getProductsTableModel() != null)
+					MasterFrame.this.getInvTableModel().getLogGateway().unregisterObserver(invItemLogObserver);
+				}
+				if (MasterFrame.this.getProductsTableModel() != null){
 					MasterFrame.this.getProductsTableModel().exitModule();
-				if (MasterFrame.this.getPartsTableModel() != null)
+				}
+				if (MasterFrame.this.getPartsTableModel() != null){
 					MasterFrame.this.getPartsTableModel().exitModule();
-				;
+				}
 			}
 		});
 
@@ -170,6 +174,7 @@ public class MasterFrame extends JFrame {
 
 	public JMenuBar updateJMenuBar() {
 		Image resizedCheckImage = null, resizedXImage = null;
+		@SuppressWarnings("unused")
 		ImageIcon checkIcon = null, xIcon = null;
 
 		try {
@@ -192,6 +197,18 @@ public class MasterFrame extends JFrame {
 		JMenuItem menuItem;
 
 		if (null == session) {
+			loginMenuItem = new JMenuItem("Login");
+			loginMenuItem.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					AuthenticatorView authView = new AuthenticatorView(MasterFrame.this);
+					new AuthenticatorController(authView, MasterFrame.this);
+					loginMenuItem.setVisible(false);
+				}
+			});
+			loginMenuItem.setVisible(false);
+			menu.add(loginMenuItem);
+			
 			menuItem = new JMenuItem("Quit");
 			menuItem.addActionListener(new ActionListener() {
 				@Override
@@ -247,6 +264,16 @@ public class MasterFrame extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					InvTableView itView = new InvTableView(MasterFrame.this);
 					new InvTableController(itView, MasterFrame.this);
+					
+					//create an observer for this model and register it with the remote EJB
+					try {
+						invItemLogObserver = new InvItemLogObserver(MasterFrame.this);
+						getInvTableModel().getLogGateway().registerObserver(invItemLogObserver);
+					} catch (RemoteException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
 				}
 			});
 			if (!session.getUserFunctions().contains(
@@ -324,10 +351,8 @@ public class MasterFrame extends JFrame {
 			props.put("org.omg.CORBA.ORBInitialPort", "3700");
 
 			InitialContext itx = new InitialContext(props);
-			authenticator = (AuthenticationBeanRemote) itx
-					.lookup("java:global/StockControl_Beans/AuthenticationBean!core.session.remote.AuthenticationBeanRemote");
-			invLogger =  (InvLoggingBeanRemote) itx
-					.lookup("java:global/StockControl_Beans/InvLoggingBean!core.inventoryModule.remote.InvLoggingBeanRemote");
+			authenticator = (AuthenticatorRemote) itx
+					.lookup("java:global/StockControl_Beans/Authenticator!core.session.models.remote.AuthenticatorRemote");
 		} catch (NamingException e1) {
 			e1.printStackTrace();
 		}
@@ -381,16 +406,12 @@ public class MasterFrame extends JFrame {
 		this.session = session;
 	}
 
-	public AuthenticationBeanRemote getAuthenticator() {
+	public AuthenticatorRemote getAuthenticator() {
 		return authenticator;
 	}
-
-	public InvLoggingBeanRemote getInvLogger() {
-		return invLogger;
-	}
-
-	public void setInvLogger(InvLoggingBeanRemote invLogger) {
-		this.invLogger = invLogger;
+	
+	public JMenuItem getLoginMenuItem() {
+		return loginMenuItem;
 	}
 
 }

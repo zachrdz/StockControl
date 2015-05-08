@@ -26,6 +26,9 @@ public class ProductsGateway implements ProductsDao{
 	private Connection connection;
 	private Date lastReadTS;
 	private int logRecordCount = 0;
+
+	public static final String MYSQL_AUTO_RECONNECT = "autoReconnect";
+	public static final String MYSQL_MAX_RECONNECTS = "maxReconnects";
 	
 	public ProductsGateway(AppPreferences AP){
 		//set up the driver
@@ -39,7 +42,15 @@ public class ProductsGateway implements ProductsDao{
 		//System.out.println("MySQL JDBC driver registered.");
 		
 		try {
-			this.connection = DriverManager.getConnection(AP.getUrl(),AP.getUsername(), AP.getPassword());
+			java.util.Properties connProperties = new java.util.Properties();
+			connProperties.put("user", AP.getUsername());
+			connProperties.put("password", AP.getPassword());
+			
+			connProperties.put(MYSQL_AUTO_RECONNECT, "true");
+			connProperties.put(MYSQL_MAX_RECONNECTS, "10");
+			
+			this.connection = DriverManager.getConnection(AP.getUrl(), connProperties);
+			
 			System.out.println("DB connection for ProductsGateway successful.");
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block

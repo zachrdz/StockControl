@@ -1,11 +1,12 @@
 package core.inventoryModule.models.obj;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class InvItemLogRecord implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private int invID;
-	private String invEntryDate;
+	private Date invEntryDate;
 	private String invEntryDesc;
 	
 	public int getInvID() {
@@ -14,10 +15,10 @@ public class InvItemLogRecord implements Serializable{
 	public void setInvID(int invID) {
 		this.invID = invID;
 	}
-	public String getInvEntryDate() {
+	public Date getInvEntryDate() {
 		return invEntryDate;
 	}
-	public void setInvEntryDate(String invEntryDate) {
+	public void setInvEntryDate(Date invEntryDate) {
 		this.invEntryDate = invEntryDate;
 	}
 	public String getInvEntryDesc() {

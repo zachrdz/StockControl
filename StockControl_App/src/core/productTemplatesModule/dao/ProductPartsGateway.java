@@ -25,6 +25,9 @@ public class ProductPartsGateway implements ProductPartsDao{
 
 	private Connection connection;
 	private Date lastReadTS;
+
+	public static final String MYSQL_AUTO_RECONNECT = "autoReconnect";
+	public static final String MYSQL_MAX_RECONNECTS = "maxReconnects";
 	
 	public ProductPartsGateway(AppPreferences AP){		
 		//set up the driver
@@ -38,7 +41,15 @@ public class ProductPartsGateway implements ProductPartsDao{
 		//System.out.println("MySQL JDBC driver registered.");
 		
 		try {
-			this.connection = DriverManager.getConnection(AP.getUrl(),AP.getUsername(), AP.getPassword());
+			java.util.Properties connProperties = new java.util.Properties();
+			connProperties.put("user", AP.getUsername());
+			connProperties.put("password", AP.getPassword());
+			
+			connProperties.put(MYSQL_AUTO_RECONNECT, "true");
+			connProperties.put(MYSQL_MAX_RECONNECTS, "10");
+			
+			this.connection = DriverManager.getConnection(AP.getUrl(), connProperties);
+			
 			System.out.println("DB connection for ProductPartsGateway successful.");
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
