@@ -174,7 +174,6 @@ public class MasterFrame extends JFrame {
 
 	public JMenuBar updateJMenuBar() {
 		Image resizedCheckImage = null, resizedXImage = null;
-		@SuppressWarnings("unused")
 		ImageIcon checkIcon = null, xIcon = null;
 
 		try {
@@ -308,10 +307,10 @@ public class MasterFrame extends JFrame {
 		JMenu UserRoleInfo = new JMenu(UserRoleInfoText);
 		customMenuBar.add(UserNameInfo);
 		customMenuBar.add(UserRoleInfo);
-        /*
+      
 		if (null != session) {
 			menuItem = new JMenuItem("Email: " + session.getUser().getEmail());
-			menuItem.setEnabled(false);
+			//menuItem.setEnabled(false);
 			UserNameInfo.add(menuItem);
 
 			for (Function function : session.getAllFunctions()) {
@@ -330,20 +329,19 @@ public class MasterFrame extends JFrame {
 					menuItem.setIcon(xIcon);
 				}
 
-				menuItem.setEnabled(false);
+				//menuItem.setEnabled(false);
 				UserRoleInfo.add(menuItem);
 
 			}
 		}
-		*/
 
 		setJMenuBar(customMenuBar);
 		customMenuBar.validate();
 		customMenuBar.repaint();
-
+		
 		return customMenuBar;
 	}
-
+	
 	public void initAuth() {
 		try {
 			Properties props = new Properties();

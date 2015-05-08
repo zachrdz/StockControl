@@ -39,10 +39,12 @@ public class Authenticator implements AuthenticatorRemote, Serializable{
 	        if (null != user && password.equals(gateway.doGetUserLogonByID(user))) {
         		Role role = gateway.doGetUserRole(user);
 	        	ArrayList<Function> userFunctions = gateway.doGetRoleFunctionList(role);
+	        	ArrayList<Function> allFunctions = gateway.doGetFunctionList();
 	        	
 	        	session.setUser(user);
 	        	session.setUserRole(role);
 	        	session.setUserFunctions(userFunctions);
+	        	session.setAllFunctions(allFunctions);
 
 	    		return session;
 	        }

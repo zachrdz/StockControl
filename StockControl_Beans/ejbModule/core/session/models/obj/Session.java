@@ -8,6 +8,7 @@ public class Session implements Serializable{
 	private User user;
 	private Role userRole;
 	private ArrayList<Function> userFunctions;
+	private ArrayList<Function> allFunctions;
 	
 	public User getUser() {
 		return user;
@@ -31,4 +32,12 @@ public class Session implements Serializable{
 	public void setUserFunctions(ArrayList<Function> userFunctions) {
 		this.userFunctions = userFunctions;
 	}	
+	
+	public ArrayList<Function> getAllFunctions() {
+		return allFunctions;
+	}
+
+	public void setAllFunctions(ArrayList<Function> allFunctions) {
+		this.allFunctions = allFunctions;
+	}
 }

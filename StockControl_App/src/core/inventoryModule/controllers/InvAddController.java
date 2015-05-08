@@ -103,7 +103,7 @@ public class InvAddController implements ActionListener{
     	}
 
     	tmp.setInvEntryDate(date);
-		tmp.setInvEntryDesc(stockType + " created with quantity '" + inv.getInvQuantity() + "' to location '" + inv.getInvLocation() + "' [" + m.getSession().getUser().getFullName() + "]");
+		tmp.setInvEntryDesc(stockType + " added with quantity '" + inv.getInvQuantity() + "' to location '" + inv.getInvLocation() + "' [" + m.getSession().getUser().getFullName() + "]");
 	    
 		m.getInvTableModel().addInvItemLogRecord(tmp);
     }

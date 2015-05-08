@@ -6,6 +6,7 @@ package core.inventoryModule.views;
  */
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 
 import core.inventoryModule.controllers.InvDetailController;
 import core.inventoryModule.models.obj.InvItem;
@@ -15,7 +16,6 @@ import core.productTemplatesModule.models.obj.ProductItem;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.Properties;
 
 
 public class InvDetailView extends JInternalFrame{
@@ -60,9 +60,6 @@ public class InvDetailView extends JInternalFrame{
 		createJLabel("", "", "Arial", 12);
 		createJLabel("", "", "Arial", 12);
 		
-		createJLabel("Inventory Item Log: ", "", "Arial", 12);
-		createJLabel("", "", "Arial", 12);
-		
 		displayInvItemLog();
 		
 		endJFrame();	
@@ -71,7 +68,7 @@ public class InvDetailView extends JInternalFrame{
 	public void createJFrame(String name, int width, int height){
 		title = name;
 		
-		gLayoutNorth = new GridLayout(7,2);
+		gLayoutNorth = new GridLayout(6,2);
     	gLayoutNorth.setHgap(15);
     	northPanel = new JPanel();
     	northPanel.setLayout(gLayoutNorth);
@@ -173,6 +170,7 @@ public class InvDetailView extends JInternalFrame{
 	public void displayInvItemLog() {
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		JList logList = new JList(detailInv.getLog(m.getInvTableModel()).toArray());
+		logList.setBorder(new TitledBorder(BorderFactory.createLineBorder(Color.WHITE),"Inventory Item Log"));
 		southPanel.add(logList);
 	}
 
