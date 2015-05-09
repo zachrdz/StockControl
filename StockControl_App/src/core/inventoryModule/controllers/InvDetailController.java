@@ -17,6 +17,7 @@ import core.session.models.obj.Function;
 public class InvDetailController implements ActionListener{
 	public static final String UPDATE_INV_COMMAND = "UPDATE_INV_COMMAND";
 	public static final String DELETE_INV_COMMAND = "DELETE_INV_COMMAND";
+	public static final String CANCEL_COMMAND = "CANCEL_COMMAND";
 	
 	private InvDetailView view;
 	private InvTableModel tableModel;
@@ -50,26 +51,30 @@ public class InvDetailController implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		switch (e.getActionCommand()) {
-		case UPDATE_INV_COMMAND:
-			InvItem invUpdated = getTextInput();
-			
-			if(updateVerify(invUpdated)){
-				logChanges(invUpdated);
+			case UPDATE_INV_COMMAND:
+				InvItem invUpdated = getTextInput();
 				
-				tableModel.updateRow(invUpdated);
+				if(updateVerify(invUpdated)){
+					tableModel.updateRow(invUpdated);
+					logChanges(invUpdated);
+					view.removeObservers();
+					view.getFrame().dispose();
+				}
+				break;
+			case DELETE_INV_COMMAND:
+				boolean checkQuanEmpty;
+				checkQuanEmpty = (view.getInv().getInvQuantity() > 0) ? false : true;
+				if(checkQuanEmpty && promptDelete(view.getInv())){
+					tableModel.removeRow(getTextInput());
+					view.removeObservers();
+					view.getFrame().dispose();
+				} else{
+					promptNotEmpty();
+				}
+				break;
+			case CANCEL_COMMAND:
+				view.removeObservers();
 				view.getFrame().dispose();
-			}
-			break;
-		case DELETE_INV_COMMAND:
-			boolean checkQuanEmpty;
-			checkQuanEmpty = (view.getInv().getInvQuantity() > 0) ? false : true;
-			if(checkQuanEmpty && promptDelete(view.getInv())){
-				tableModel.removeRow(getTextInput());
-				view.getFrame().dispose();
-			} else{
-				promptNotEmpty();
-			}
-			break;
 		default : break;
 		}
 	}
@@ -93,7 +98,7 @@ public class InvDetailController implements ActionListener{
     		changedVital = true;
     	}
     	
-    	System.out.println("partid: " + iPartID + " prodID: " + iProductID);
+    	//System.out.println("partid: " + iPartID + " prodID: " + iProductID);
     	
     	return updatedInv;
     }
@@ -174,7 +179,7 @@ public class InvDetailController implements ActionListener{
     		if(validate && !changedVital){
     			if(invItemLastUpdated.compareTo(tableModel.getInvItemLastUpdate(view.getInv())) != 0){
     				choice = m.displayChildMessageOptionCustom("Warning","This record has been edited by someone else since you've last opened it!\nYou may cancel, ignore and submit your changes, or reload with new data.", options);
-    			} else if(!m.getInvTableModel().checkCanAdd(invUpdatedMod)){
+    			} else if(!m.getInvTableModel().checkCanAdd(invUpdatedMod) && invUpdated.getInvQuantity() > view.getInv().getInvQuantity()){
     				m.displayChildMessage("Not enough Parts at this location to update this product!");
     			}else{
     				return true;

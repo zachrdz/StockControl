@@ -9,6 +9,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
 import core.inventoryModule.controllers.InvDetailController;
+import core.inventoryModule.models.InvItemLogObserver;
 import core.inventoryModule.models.obj.InvItem;
 import core.mdi.models.MasterFrame;
 import core.partsModule.models.obj.PartItem;
@@ -16,12 +17,13 @@ import core.productTemplatesModule.models.obj.ProductItem;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 
 
 public class InvDetailView extends JInternalFrame{
 
 	private InvItem detailInv;
-	private JButton updateBtn, deleteBtn;
+	private JButton updateBtn, deleteBtn, cancelBtn;
 	
 	private String iPartID;
 	private String iProductID;
@@ -31,10 +33,14 @@ public class InvDetailView extends JInternalFrame{
 	private JPanel northPanel;
 	private JPanel centerPanel;
 	private JPanel southPanel;
-	private JScrollPane southScrollPane;
+	private JScrollPane centerScrollPane;
 	private GridLayout gLayoutNorth;
 	private GridLayout gLayoutCenter;
 	private GridLayout gLayoutSouth;
+	private JList<Object> logList;
+
+	private InvItemLogObserver invItemLogObserver;
+
 	private MasterFrame m;
 	private static final long serialVersionUID = 1L;
 
@@ -56,6 +62,7 @@ public class InvDetailView extends JInternalFrame{
 		
 		createJButton("Delete");
 		createJButton("Update");
+		createJButton("Cancel");
 		
 		createJLabel("", "", "Arial", 12);
 		createJLabel("", "", "Arial", 12);
@@ -63,6 +70,8 @@ public class InvDetailView extends JInternalFrame{
 		displayInvItemLog();
 		
 		endJFrame();	
+		
+		initObservers();
 	}
 	
 	public void createJFrame(String name, int width, int height){
@@ -83,20 +92,19 @@ public class InvDetailView extends JInternalFrame{
     	southPanel = new JPanel();
     	southPanel.setLayout(gLayoutSouth);
     	
-    	southScrollPane = new JScrollPane(southPanel);
-		southScrollPane.setPreferredSize(new Dimension(520, 100));
-		
+    	centerScrollPane = new JScrollPane(centerPanel);
+		centerScrollPane.setPreferredSize(new Dimension(600, 100));
 	}
 	
 	public void endJFrame(){
 		resizable = true;
-        closable = true;
+        closable = false;
         maximizable = true;
         iconable = true;
         
         getContentPane().add(BorderLayout.NORTH, northPanel);
-        getContentPane().add(BorderLayout.CENTER, centerPanel);
-        getContentPane().add(BorderLayout.SOUTH, southScrollPane);
+        getContentPane().add(BorderLayout.CENTER, centerScrollPane);
+        getContentPane().add(BorderLayout.SOUTH, southPanel);
         
         pack();
         
@@ -163,15 +171,48 @@ public class InvDetailView extends JInternalFrame{
 		switch(buttonText){
 			case "Update" : updateBtn = new JButton(buttonText); northPanel.add(updateBtn); updateBtn.setActionCommand(InvDetailController.UPDATE_INV_COMMAND); break;
 			case "Delete" : deleteBtn = new JButton(buttonText); northPanel.add(deleteBtn); deleteBtn.setActionCommand(InvDetailController.DELETE_INV_COMMAND); break;
+			case "Cancel" : cancelBtn = new JButton(buttonText); southPanel.add(cancelBtn); cancelBtn.setActionCommand(InvDetailController.CANCEL_COMMAND); break;
 			default : break;
 		}
 	}
 	
 	public void displayInvItemLog() {
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		JList logList = new JList(detailInv.getLog(m.getInvTableModel()).toArray());
+		setLogList();
 		logList.setBorder(new TitledBorder(BorderFactory.createLineBorder(Color.WHITE),"Inventory Item Log"));
-		southPanel.add(logList);
+		centerPanel.add(logList);
+	}
+	
+	public void asyncReloadInvItemLog() {		
+		new Thread(new Runnable() {
+		    public void run() {
+		    	centerPanel.remove(logList);
+		    	setLogList();
+		    	logList.setBorder(new TitledBorder(BorderFactory.createLineBorder(Color.WHITE),"Inventory Item Log"));
+				InvDetailView.this.repaint();
+				InvDetailView.this.revalidate();
+				centerPanel.add(logList);
+				centerPanel.repaint();
+				centerPanel.revalidate();
+		    }
+		}).start();	
+	}
+	
+	/*
+	 * Initializes remote and local observers
+	 */
+	public void initObservers() {
+		// create an observer for this model and register it with the remote EJB
+		try {
+			invItemLogObserver = new InvItemLogObserver(this);
+			m.getInvTableModel().registerLogObserver(invItemLogObserver);
+			m.getAllInvItemLogObservers().add(invItemLogObserver);
+		} catch (RemoteException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	public void removeObservers() {
+		m.getInvTableModel().unregisterLogObserver(invItemLogObserver);
 	}
 
 	public InvItem getInv(){
@@ -206,6 +247,7 @@ public class InvDetailView extends JInternalFrame{
 	public void addButtonListener(ActionListener listener) {
 		updateBtn.addActionListener(listener);
 		deleteBtn.addActionListener(listener);
+		cancelBtn.addActionListener(listener);
 	}
 
 	public JButton getUpdateBtn() {
@@ -214,6 +256,27 @@ public class InvDetailView extends JInternalFrame{
 
 	public JButton getDeleteBtn() {
 		return deleteBtn;
+	}
+	
+	public JButton getCancelBtn() {
+		return cancelBtn;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public JList getLogList() {
+		return logList;
+	}
+
+	public void setLogList() {
+		logList = new JList<Object>(detailInv.getLog(m.getInvTableModel()).toArray());
+	}
+	
+	public InvItemLogObserver getInvItemLogObserver() {
+		return invItemLogObserver;
+	}
+
+	public void setInvItemLogObserver(InvItemLogObserver invItemLogObserver) {
+		this.invItemLogObserver = invItemLogObserver;
 	}
 	
 }

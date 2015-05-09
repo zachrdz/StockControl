@@ -187,6 +187,14 @@ public class InvTableModel extends AbstractTableModel {
 		return logGateway;
 	}
 	
+	public void registerLogObserver(InvItemLogObserver logObsvr){
+		logGateway.registerObserver(logObsvr);
+	}
+	
+	public void unregisterLogObserver(InvItemLogObserver logObsvr) {
+		logGateway.unregisterObserver(logObsvr);
+	}
+	
 	public ArrayList<InvItemLogRecord> getInvItemLog(int invID) {
 		return logGateway.doRead(invID);
 	}

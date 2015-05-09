@@ -99,8 +99,7 @@ public class InvItemLogGateway implements InvItemLogGatewayRemote, Serializable 
 	public void doClose() {
 		// TODO Auto-generated method stub
 		jedis.close();
-		System.out
-				.println("EJB Redis DB connection for InvItemLogGateway has been closed");
+		System.out.println("EJB Redis DB connection for InvItemLogGateway has been closed");
 	}
 
 	/**

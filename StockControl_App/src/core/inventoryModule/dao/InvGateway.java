@@ -134,7 +134,7 @@ public class InvGateway implements InvDao{
 	
 	public void doUpdate(InvItem inv){
 		String callString = "{call update_InvByID5(?,?,?,?,?)}";
-		System.out.println("Update: " + inv.getInvID()+","+inv.getInvPartID()+","+inv.getInvProductID()+","+inv.getInvQuantity()+","+inv.getInvLocation());
+		//System.out.println("Update: " + inv.getInvID()+","+inv.getInvPartID()+","+inv.getInvProductID()+","+inv.getInvQuantity()+","+inv.getInvLocation());
 		try {
 			CallableStatement callstate = this.connection.prepareCall(callString);
 			callstate.setInt(1, inv.getInvID());

@@ -3,21 +3,12 @@ package core.mdi.models;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.swing.Box;
-import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -25,22 +16,16 @@ import javax.swing.UIManager.*;
 
 import java.io.File;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import javax.imageio.ImageIO;
 
-import core.inventoryModule.controllers.InvTableController;
 import core.inventoryModule.models.InvItemLogObserver;
 import core.inventoryModule.models.InvTableModel;
-import core.inventoryModule.views.InvTableView;
-import core.partsModule.controllers.PartsTableController;
 import core.partsModule.models.PartsTableModel;
-import core.partsModule.views.PartsTableView;
-import core.productTemplatesModule.controllers.ProductsTableController;
 import core.productTemplatesModule.models.ProductsTableModel;
-import core.productTemplatesModule.views.ProductsTableView;
 import core.session.controllers.AuthenticatorController;
-import core.session.models.obj.Function;
 import core.session.models.obj.Session;
 import core.session.models.remote.AuthenticatorRemote;
 import core.session.views.AuthenticatorView;
@@ -54,9 +39,12 @@ public class MasterFrame extends JFrame {
 	private ProductsTableModel productsTableModel;
 	private AppPreferences AP;
 	private BufferedImage backgroundImage;
+	@SuppressWarnings("unused")
+	private MasterMenuBar masterMenuBar;
 	private JMenuItem loginMenuItem;
 	private InvItemLogObserver invItemLogObserver;
-
+	private ArrayList<InvItemLogObserver> allInvItemLogObservers;
+	
 	private AuthenticatorRemote authenticator = null;
 	private Session session = null;
 
@@ -66,31 +54,108 @@ public class MasterFrame extends JFrame {
 		setPartsTableModel(new PartsTableModel(AP));
 		setInvTableModel(new InvTableModel(AP));
 		setProductsTableModel(new ProductsTableModel(AP));
+		
 		initAuth();
+		initObservers();
 
+		createBackground();
+		createUI();
+		
+		updateMenuBar();
+		createDesktop();
+		
+		initShutDownHook();
+        
+		// Display login window when program is launched
+		AuthenticatorView authView = new AuthenticatorView(this);
+		new AuthenticatorController(authView, MasterFrame.this);
+	}
+
+	/*
+	 * Creates and displays the JFrame
+	 */
+	public static void createAndShowGUI() {
+		MasterFrame frame = new MasterFrame("Cabinetron Managment Tool");
+		frame.setSize(1024, 768);
+		frame.setLocationRelativeTo(null);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+	}
+	
+	/*
+	 * Grabs authentication bean, so that it may be used to authenticate users
+	 */
+	public void initAuth() {
 		try {
-			backgroundImage = ImageIO.read(new File(
-					"img/cabinetron_logo_transparent.png"));
+			Properties props = new Properties();
+			props.put("org.omg.CORBA.ORBInitialHost", "localhost");
+			props.put("org.omg.CORBA.ORBInitialPort", "3700");
+
+			InitialContext itx = new InitialContext(props);
+			authenticator = (AuthenticatorRemote) itx
+					.lookup("java:global/StockControl_Beans/Authenticator!core.session.models.remote.AuthenticatorRemote");
+		} catch (NamingException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	/*
+	 * Initializes remote and local observers
+	 */
+	public void initObservers() {
+		allInvItemLogObservers = new ArrayList<InvItemLogObserver>();
+		
+		// create an observer for this model and register it with the remote EJB
+		try {
+			setInvItemLogObserver(new InvItemLogObserver(this));
+			allInvItemLogObservers.add(invItemLogObserver);
+			getInvTableModel().registerLogObserver(getInvItemLogObserver());
+		} catch (RemoteException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	/*
+	 * Creates the Background
+	 */
+	public void createBackground() {
+		try {
+			backgroundImage = ImageIO.read(new File("img/cabinetron_logo_transparent.png"));
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-
+	}
+	
+	/*
+	 * Creates the UI the application will use and sets it
+	 */
+	public void createUI() {
+		LookAndFeelInfo[] lookNFeels = UIManager.getInstalledLookAndFeels();
+		
 		try {
-			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+			for (LookAndFeelInfo info : lookNFeels) {
 				if ("Nimbus".equals(info.getName())) {
 					UIManager.setLookAndFeel(info.getClassName());
 					break;
 				}
 			}
-		} catch (Exception e) {
-			// If Nimbus is not available, you can set the GUI to another look
-			// and feel.
+		} catch (Exception e1) {
+			System.out.println("Nimbus Look & Feel not available, setting UI to use default system Look & Feel");
+			
+			try {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			} catch (Exception e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			} 
 		}
-
-		updateJMenuBar();
-
-		// create the MDI desktop
-		// A specialized layered pane to be used with JInternalFrames
+	}
+	
+	/*
+	 * Create the MDI desktop: 
+	 * A specialized layered pane to be used with JInternalFrames
+	 */
+	public void createDesktop() {
 		desktop = new JDesktopPane() {
 			private static final long serialVersionUID = 1L;
 
@@ -114,32 +179,53 @@ public class MasterFrame extends JFrame {
 			}
 		};
 		add(desktop);
-
+	}
+	
+	/*
+	 * Updates the JMenuBar by calling for a new instance 
+	 * that will contain an updated state
+	 */
+	public void updateMenuBar() {
+		masterMenuBar = new MasterMenuBar(this);
+	}
+	
+	/*
+	 * This sets the operations that will take place when the program exits
+	 * It will make sure that the program exits gracefully
+	 */
+	public void initShutDownHook() {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
-				if (MasterFrame.this.getInvTableModel() != null){
+				if (MasterFrame.this.getInvTableModel() != null) {
 					MasterFrame.this.getInvTableModel().exitModule();
-					MasterFrame.this.getInvTableModel().getLogGateway().unregisterObserver(invItemLogObserver);
 				}
-				if (MasterFrame.this.getProductsTableModel() != null){
+				if (MasterFrame.this.getProductsTableModel() != null) {
 					MasterFrame.this.getProductsTableModel().exitModule();
 				}
-				if (MasterFrame.this.getPartsTableModel() != null){
+				if (MasterFrame.this.getPartsTableModel() != null) {
 					MasterFrame.this.getPartsTableModel().exitModule();
 				}
+				
+				// Unregister all invItemLogObservers if they are still registered
+				for(InvItemLogObserver logObsvr : allInvItemLogObservers){
+					MasterFrame.this.getInvTableModel().unregisterLogObserver(logObsvr);
+				}
+				
+				System.out.println("All InvItemLogObservers have been unregistered.");
 			}
 		});
-
-		AuthenticatorView authView = new AuthenticatorView(this);
-		new AuthenticatorController(authView, MasterFrame.this);
 	}
-
-	// display a child's message in a dialog centered on MDI frame
+	
+	/*
+	 * Display a child's message in a dialog centered on MDI frame
+	 */
 	public void displayChildMessage(String msg) {
 		JOptionPane.showInternalMessageDialog(this.getContentPane(), msg);
 	}
 
-	// display a child's yes/no message in a dialog centered on MDI frame
+	/*
+	 *  Display a child's yes/no message in a dialog centered on MDI frame
+	 */
 	public boolean displayChildMessageOption(String titleBar, String infoMsg) {
 		int dialogButton = JOptionPane.YES_NO_OPTION;
 
@@ -152,7 +238,9 @@ public class MasterFrame extends JFrame {
 		return false;
 	}
 
-	// display a child's yes/no message in a dialog centered on MDI frame
+	/*
+	 * Display a child's yes/no message in a dialog centered on MDI frame
+	 */
 	public int displayChildMessageOptionCustom(String titleBar, String infoMsg,
 			Object[] options) {
 		int dialogResult = JOptionPane.showInternalOptionDialog(
@@ -162,200 +250,11 @@ public class MasterFrame extends JFrame {
 
 		return dialogResult;
 	}
-
-	// creates and displays the JFrame
-	public static void createAndShowGUI() {
-		MasterFrame frame = new MasterFrame("Cabinetron Managment Tool");
-		frame.setSize(1024, 768);
-		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-	}
-
-	public JMenuBar updateJMenuBar() {
-		Image resizedCheckImage = null, resizedXImage = null;
-		ImageIcon checkIcon = null, xIcon = null;
-
-		try {
-			Image checkImage = ImageIO.read(new File("img/checkIcon.png"));
-			Image xImage = ImageIO.read(new File("img/xIcon.png"));
-
-			resizedCheckImage = checkImage.getScaledInstance(20, 20, 0);
-			resizedXImage = xImage.getScaledInstance(20, 20, 0);
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-		checkIcon = new ImageIcon(resizedCheckImage);
-		xIcon = new ImageIcon(resizedXImage);
-
-		// create menu for adding inner frames
-		JMenuBar customMenuBar = new JMenuBar();
-		JMenu menu = new JMenu("File");
-		JMenuItem menuItem;
-
-		if (null == session) {
-			loginMenuItem = new JMenuItem("Login");
-			loginMenuItem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					AuthenticatorView authView = new AuthenticatorView(MasterFrame.this);
-					new AuthenticatorController(authView, MasterFrame.this);
-					loginMenuItem.setVisible(false);
-				}
-			});
-			loginMenuItem.setVisible(false);
-			menu.add(loginMenuItem);
-			
-			menuItem = new JMenuItem("Quit");
-			menuItem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					MasterFrame.this.dispatchEvent(new WindowEvent(
-							MasterFrame.this, WindowEvent.WINDOW_CLOSING));
-				}
-			});
-			menu.add(menuItem);
-		}
-		customMenuBar.add(menu);
-
-		String UserNameInfoText = "Not Logged In";
-		String UserRoleInfoText = "";
-
-		if (null != session) {
-			menuItem = new JMenuItem("Logout");
-			menuItem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					session = null;
-					invTableModel.refreshTableData("");
-					for (JInternalFrame frame : getDesktop().getAllFrames()) {
-						frame.dispose();
-					}
-					updateJMenuBar();
-
-					AuthenticatorView authView = new AuthenticatorView(
-							MasterFrame.this);
-					new AuthenticatorController(authView, MasterFrame.this);
-				}
-			});
-			menu.add(menuItem);
-
-			menu = new JMenu("Modules");
-			menuItem = new JMenuItem("Parts");
-			menuItem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					PartsTableView ptView = new PartsTableView(MasterFrame.this);
-					new PartsTableController(ptView, MasterFrame.this);
-				}
-			});
-			if (!session.getUserFunctions().contains(
-					new Function("canViewParts"))) {
-				menuItem.setEnabled(false);
-			}
-			menu.add(menuItem);
-
-			menuItem = new JMenuItem("Inventory");
-			menuItem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					InvTableView itView = new InvTableView(MasterFrame.this);
-					new InvTableController(itView, MasterFrame.this);
-					
-					//create an observer for this model and register it with the remote EJB
-					try {
-						invItemLogObserver = new InvItemLogObserver(MasterFrame.this);
-						getInvTableModel().getLogGateway().registerObserver(invItemLogObserver);
-					} catch (RemoteException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					
-				}
-			});
-			if (!session.getUserFunctions().contains(
-					new Function("canViewInventory"))) {
-				menuItem.setEnabled(false);
-			}
-			menu.add(menuItem);
-
-			menuItem = new JMenuItem("Product Templates");
-			menuItem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					ProductsTableView ptView = new ProductsTableView(
-							MasterFrame.this);
-					new ProductsTableController(ptView, MasterFrame.this);
-				}
-			});
-			if (!session.getUserFunctions().contains(
-					new Function("canViewProductTemplates"))) {
-				menuItem.setEnabled(false);
-			}
-			menu.add(menuItem);
-
-			UserNameInfoText = session.getUser().getFullName();
-			UserRoleInfoText = "(" + session.getUserRole().getRoleName() + ")";
-		}
-
-		customMenuBar.add(menu);
-
-		customMenuBar.add(Box.createHorizontalGlue());
-		JMenu UserNameInfo = new JMenu(UserNameInfoText);
-		JMenu UserRoleInfo = new JMenu(UserRoleInfoText);
-		customMenuBar.add(UserNameInfo);
-		customMenuBar.add(UserRoleInfo);
-      
-		if (null != session) {
-			menuItem = new JMenuItem("Email: " + session.getUser().getEmail());
-			//menuItem.setEnabled(false);
-			UserNameInfo.add(menuItem);
-
-			for (Function function : session.getAllFunctions()) {
-				menuItem = new JMenuItem(function.getFunctionName());
-				boolean exists = false;
-				for (Function subFunction : session.getUserFunctions()) {
-					if (subFunction.getFunctionID() == function.getFunctionID()) {
-						exists = true;
-						break;
-					}
-				}
-
-				if (exists) {
-					menuItem.setIcon(checkIcon);
-				} else {
-					menuItem.setIcon(xIcon);
-				}
-
-				//menuItem.setEnabled(false);
-				UserRoleInfo.add(menuItem);
-
-			}
-		}
-
-		setJMenuBar(customMenuBar);
-		customMenuBar.validate();
-		customMenuBar.repaint();
-		
-		return customMenuBar;
-	}
 	
-	public void initAuth() {
-		try {
-			Properties props = new Properties();
-			props.put("org.omg.CORBA.ORBInitialHost", "localhost");
-			props.put("org.omg.CORBA.ORBInitialPort", "3700");
-
-			InitialContext itx = new InitialContext(props);
-			authenticator = (AuthenticatorRemote) itx
-					.lookup("java:global/StockControl_Beans/Authenticator!core.session.models.remote.AuthenticatorRemote");
-		} catch (NamingException e1) {
-			e1.printStackTrace();
-		}
-	}
-
+	/*
+	 * All Getters/Setters for MasterFrame
+	 */
+	
 	public PartsTableModel getPartsTableModel() {
 		return partsTableModel;
 	}
@@ -407,9 +306,29 @@ public class MasterFrame extends JFrame {
 	public AuthenticatorRemote getAuthenticator() {
 		return authenticator;
 	}
-	
+
 	public JMenuItem getLoginMenuItem() {
 		return loginMenuItem;
 	}
 
+	public void setLoginMenuItem(JMenuItem menuItem) {
+		loginMenuItem = menuItem;
+	}
+	
+	public ArrayList<InvItemLogObserver> getAllInvItemLogObservers() {
+		return allInvItemLogObservers;
+	}
+
+	public void setAllInvItemLogObservers(
+			ArrayList<InvItemLogObserver> allInvItemLogObservers) {
+		this.allInvItemLogObservers = allInvItemLogObservers;
+	}
+	
+	public InvItemLogObserver getInvItemLogObserver() {
+		return invItemLogObserver;
+	}
+
+	public void setInvItemLogObserver(InvItemLogObserver invItemLogObserver) {
+		this.invItemLogObserver = invItemLogObserver;
+	}
 }

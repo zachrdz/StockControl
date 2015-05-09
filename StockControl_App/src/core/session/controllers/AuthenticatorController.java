@@ -37,7 +37,7 @@ public class AuthenticatorController implements ActionListener{
 				
 				if(null != session){
 					m.setSession(session);
-					m.updateJMenuBar();
+					m.updateMenuBar();
 					view.getFrame().dispose();
 				}
 				else {

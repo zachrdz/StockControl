@@ -10,8 +10,11 @@ import javax.rmi.PortableRemoteObject;
  */
 public class InvItemLogObserver implements InvItemLogObserverRemote {
 	
-	//master is the real consumer of the notification
+	//master is a real consumer of the notification
 	private core.mdi.models.MasterFrame master = null;
+	
+	//inventory detail view is a real consumer of the notification
+	private core.inventoryModule.views.InvDetailView invDetailView;
 	
 	//exportObject turns this class into a little client-side server 
 	//so that the remote EJB can call it back
@@ -19,12 +22,27 @@ public class InvItemLogObserver implements InvItemLogObserverRemote {
 		PortableRemoteObject.exportObject(this);
 		master = mp;
 	}
+	
+	public InvItemLogObserver(core.inventoryModule.views.InvDetailView idv) throws RemoteException {
+		PortableRemoteObject.exportObject(this);
+		invDetailView = idv;
+	}
 
 	//callback the method that the EJB remotely calls
 	@Override
 	public void callback(String data) throws RemoteException {
-		System.out.print("A global change to Inventory Items has been detected, reloading data.");
-		master.getInvTableModel().refreshTableData(master.getInvTableModel().getLocFilter());
+		System.out.println("A change to Inventory Items has been detected, registered observers have been notified.");
+		
+		// Depending on caller, perform different callback action
+		
+		if(null != invDetailView){
+			invDetailView.asyncReloadInvItemLog();
+			System.out.println("Log view for invID:" + invDetailView.getInv().getInvID() + " has been reloaded by observer.");
+		}
+		
+		if(null != master){
+			master.getInvTableModel().refreshTableData(master.getInvTableModel().getLocFilter());
+		}
 	}
 	
 }
